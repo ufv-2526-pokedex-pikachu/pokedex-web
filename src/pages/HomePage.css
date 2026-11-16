@@ -1,0 +1,38 @@
+.home { display: grid; gap: var(--gap); max-width: 1320px; }
+.home__head { display: grid; gap: 4px; margin-bottom: 10px; }
+.page-title { font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.01em; }
+
+/* Las cifras van en una sola tarjeta dividida, no en siete tarjetas sueltas. */
+.figures {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: 18px 0;
+}
+.figure { display: grid; gap: 6px; align-content: start; padding: 0 var(--pad); border-left: 1px solid var(--raised); }
+.figure:first-child { border-left: 0; }
+.figure__label { font-size: var(--fs-small); color: var(--muted); line-height: 16px; }
+.figure__value { font-size: var(--fs-kpi); line-height: 30px; font-weight: 500; }
+.figure__unit { font-size: var(--fs-body); color: var(--faint); font-weight: 400; }
+.figure__type { justify-self: start; margin-top: 4px; }
+
+.kanto-card { display: grid; gap: 18px; }
+.kanto-card__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+.kanto-skeleton { height: 520px; border-radius: var(--radius-inner); background: var(--raised); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.55; } }
+
+.legend { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; font-size: var(--fs-small); color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.legend__swatch { width: 12px; height: 12px; border-radius: 3px; background: var(--raised); }
+.legend__swatch.is-captured { background: color-mix(in srgb, var(--accent) 55%, var(--raised)); }
+.legend__swatch.is-seen { background: #525252; }
+
+@media (max-width: 1180px) {
+  .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 18px; }
+  .figure:nth-child(5) { border-left: 0; }
+}
+@media (max-width: 640px) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figure:nth-child(odd) { border-left: 0; }
+  .figure:nth-child(even) { border-left: 1px solid var(--raised); }
+  .kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
+}

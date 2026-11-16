@@ -1,0 +1,23 @@
+.kanto {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 4px;
+}
+.kanto__cell { aspect-ratio: 1; }
+.kanto__btn {
+  width: 100%; height: 100%; display: grid; place-items: center;
+  border: 0; padding: 0; border-radius: 10px; background: var(--raised);
+  transition: background-color 120ms, transform 160ms var(--ease-out);
+}
+button.kanto__btn { cursor: pointer; }
+button.kanto__btn:hover { background: var(--raised-2); transform: scale(1.06); }
+.kanto__btn img { width: 115%; height: 115%; object-fit: contain; image-rendering: pixelated; }
+.kanto__n { font-size: 11px; color: #5e5e5e; }
+
+/* Visto pero sin capturar: silueta. */
+.kanto__cell.is-seen img { filter: brightness(0) invert(0.32); }
+/* Capturado: a color y con el amarillo de "tuyo" en el fondo. */
+.kanto__cell.is-captured .kanto__btn { background: color-mix(in srgb, var(--accent) 14%, var(--raised)); }
+
+.kanto--preview .kanto__btn { background: var(--surface); }
+.kanto--preview img { filter: grayscale(1) brightness(0.55); transition: filter 300ms; }
+.kanto--preview .kanto__cell:hover img { filter: none; }
