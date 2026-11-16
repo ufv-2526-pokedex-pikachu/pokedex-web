@@ -121,6 +121,23 @@ a { color: inherit; }
 .card { background: var(--surface); border-radius: var(--radius-card); padding: var(--pad); }
 .card-title { font-size: var(--fs-section); font-weight: 600; line-height: 24px; }
 
+
+/* Pestañas subrayadas: la seleccionada lleva una línea blanca tan ancha como su texto. */
+.tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--rule); }
+.tabs__tab {
+  position: relative; background: none; border: 0; padding: 0 0 12px; cursor: pointer;
+  color: var(--muted); font-weight: 500;
+  transition: color 120ms;
+}
+.tabs__tab:hover { color: var(--text); }
+.tabs__tab[aria-selected='true'] { color: var(--text); }
+.tabs__tab[aria-selected='true']::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--text);
+}
+
+.page-title { font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.01em; }
+@keyframes pulse { 50% { opacity: 0.55; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
 }

@@ -10,9 +10,11 @@ import './Shell.css'
 
 export const NAV = [
   { to: '/', label: 'Inicio', end: true },
+  { to: '/pokedex', label: 'Mi Pokédex', end: false },
 ] as const
 
 function titleFor(path: string): string {
+  if (path.startsWith('/pokemon/')) return 'Ficha'
   return NAV.find((n) => (n.to === '/' ? path === '/' : path.startsWith(n.to)))?.label ?? 'Pokédex'
 }
 

@@ -33,3 +33,5 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 |---|---|
 | Acceso (entrar y crear cuenta) | `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `POST /auth/refresh` |
 | Inicio (resumen y muro de Kanto) | `GET /pokedex/stats`, `GET /pokedex` (paginado de 100 en 100) |
+| Mi Pokédex (pestañas, orden, páginas, favoritos, exportar) | `GET /pokedex` con `captured`, `favorite`, `sort`, `order`, `limit`, `offset`; `GET /pokedex/stats` para los totales; `PATCH /pokedex/{id}`; `GET /pokedex/export` |
+| Ficha de un Pokémon | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |

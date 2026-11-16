@@ -1,0 +1,70 @@
+.mon { display: grid; gap: var(--gap); max-width: 1320px; }
+.mon__nav { display: flex; justify-content: space-between; align-items: center; margin: -8px -10px 4px; }
+.mon__steps { display: flex; gap: 4px; }
+
+/* Cabecera: el propio Pokémon, grande. */
+.mon__head { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: center; }
+.mon__art {
+  aspect-ratio: 1; border-radius: 16px; background: var(--raised);
+  display: grid; place-items: center;
+}
+.mon__art.is-captured { background: color-mix(in srgb, var(--accent) 10%, var(--raised)); }
+.mon__art img { width: 88%; height: 88%; object-fit: contain; animation: art-in 420ms var(--ease-out); }
+@keyframes art-in { from { opacity: 0; transform: scale(0.94); } }
+.mon__info { display: grid; gap: 10px; justify-items: start; }
+.mon__name { font-size: 32px; line-height: 38px; font-weight: 600; letter-spacing: -0.02em; }
+.mon__status { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.mon__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.mon__types-skel { width: 120px; height: 22px; border-radius: 99px; background: var(--raised); }
+.btn.is-fav { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, #000); }
+.btn-danger { background: var(--negative); border-color: var(--negative); color: #fff; }
+.btn-danger:hover { background: #cc3d42; border-color: #cc3d42; }
+
+/* Rejilla de 6 columnas: stats 4 + datos 2; tu registro ocupa las 6. */
+.mon__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
+.mon__stats { grid-column: span 4; display: grid; gap: 18px; align-content: start; }
+.mon__facts { grid-column: span 2; display: grid; gap: 18px; align-content: start; }
+.mon__entry { grid-column: span 6; display: grid; gap: 18px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+.stats { margin: 0; display: grid; gap: 14px; }
+.stat { display: grid; grid-template-columns: 110px 40px 1fr; align-items: center; gap: 12px; }
+.stat dt { color: var(--muted); }
+.stat dd { margin: 0; text-align: right; font-weight: 500; }
+.stat__bar { height: 8px; border-radius: 99px; background: var(--raised); overflow: hidden; }
+.stat__bar span { display: block; height: 100%; border-radius: inherit; background: var(--accent); transform-origin: left; animation: bar-in 600ms var(--ease-out); }
+@keyframes bar-in { from { transform: scaleX(0); } }
+
+.facts { margin: 0; display: grid; gap: 14px; }
+.facts div { display: grid; gap: 2px; }
+.facts dt { font-size: var(--fs-small); color: var(--muted); }
+.facts dd { margin: 0; font-size: 15px; }
+.sprites { display: grid; gap: 8px; }
+
+.segmented { display: inline-flex; padding: 3px; background: var(--raised); border-radius: 99px; justify-self: start; }
+.segmented button {
+  height: 30px; padding: 0 14px; border: 0; border-radius: 99px; background: transparent; color: var(--muted);
+  cursor: pointer; font-weight: 500; transition: background-color 120ms, color 120ms;
+}
+.segmented button:hover { color: var(--text); }
+.segmented button[aria-pressed='true'] { background: var(--text); color: #000; }
+
+.entry-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; align-items: end; }
+.entry-form__notes { grid-row: span 2; align-self: stretch; }
+.textarea { height: 100%; min-height: 96px; padding: 12px 14px; resize: vertical; line-height: 20px; }
+.check { display: flex; align-items: center; gap: 10px; height: 44px; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.input:disabled { opacity: 0.5; }
+.entry-form__actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.skel { border-radius: var(--radius-inner); background: var(--raised); animation: pulse 1.4s ease-in-out infinite; }
+
+@media (max-width: 900px) {
+  .mon__head { grid-template-columns: 1fr; gap: 20px; }
+  .mon__art { max-width: 280px; width: 100%; justify-self: center; }
+  .mon__stats, .mon__facts, .mon__entry { grid-column: 1 / -1; }
+  .entry-form { grid-template-columns: 1fr; }
+  .entry-form__notes { grid-row: auto; }
+  .stat { grid-template-columns: 96px 36px 1fr; }
+}

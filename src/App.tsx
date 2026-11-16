@@ -4,6 +4,9 @@ import { AuthProvider, useAuth } from './auth/AuthContext'
 import { Shell } from './components/Shell'
 import { AuthPage } from './pages/AuthPage'
 import { HomePage } from './pages/HomePage'
+import { PokedexPage } from './pages/PokedexPage'
+import { PokemonPage } from './pages/PokemonPage'
+import { ToastProvider } from './components/Toast'
 
 /** Si no hay sesión, manda a /entrar y recuerda adónde querías ir. */
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -18,13 +21,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastProvider>
         <Routes>
           <Route path="/entrar" element={<AuthPage />} />
           <Route element={<RequireAuth><Shell /></RequireAuth>}>
             <Route index element={<HomePage />} />
+            <Route path="pokedex" element={<PokedexPage />} />
+            <Route path="pokemon/:id" element={<PokemonPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   )

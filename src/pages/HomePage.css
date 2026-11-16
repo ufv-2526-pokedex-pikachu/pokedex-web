@@ -1,6 +1,5 @@
 .home { display: grid; gap: var(--gap); max-width: 1320px; }
 .home__head { display: grid; gap: 4px; margin-bottom: 10px; }
-.page-title { font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.01em; }
 
 /* Las cifras van en una sola tarjeta dividida, no en siete tarjetas sueltas. */
 .figures {
@@ -18,7 +17,6 @@
 .kanto-card__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
 .kanto-skeleton { height: 520px; border-radius: var(--radius-inner); background: var(--raised); animation: pulse 1.4s ease-in-out infinite; }
-@keyframes pulse { 50% { opacity: 0.55; } }
 
 .legend { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; font-size: var(--fs-small); color: var(--muted); }
 .legend li { display: flex; align-items: center; gap: 6px; }

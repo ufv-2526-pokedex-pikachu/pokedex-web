@@ -1,0 +1,71 @@
+.dex { display: grid; gap: 22px; max-width: 1320px; }
+
+.title-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.title-row__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.dex__tabs { overflow-x: auto; scrollbar-width: none; }
+.tabs__count { margin-left: 6px; color: var(--faint); font-size: var(--fs-small); }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: -6px; }
+.toolbar__sort { display: flex; align-items: center; gap: 8px; }
+.select {
+  height: var(--control-height); padding: 0 32px 0 14px; border-radius: var(--radius-control);
+  border: 1px solid var(--control); background: transparent; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b4b4b4' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center;
+}
+.select:hover { border-color: #5a5a5a; }
+.select option { background: var(--surface); }
+
+/* Tabla sin tarjeta alrededor: cabecera gris, filas de 80px con su miniatura y líneas muy suaves. */
+.dex-row {
+  display: grid; grid-template-columns: minmax(220px, 2.2fr) minmax(160px, 1.2fr) minmax(170px, 1.2fr) 48px;
+  align-items: center; gap: 16px; min-height: 80px; padding: 0 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.dex-row--head { min-height: 32px; border-bottom: 1px solid var(--rule); font-size: var(--fs-small); color: var(--muted); }
+.dex-row:not(.dex-row--head):hover { background: var(--surface); }
+
+.dex-row__id { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; border-radius: 10px; }
+.dex-row__id img { width: 56px; height: 56px; image-rendering: pixelated; background: var(--surface); border-radius: 12px; flex: none; }
+.dex-row:hover .dex-row__id img { background: var(--raised); }
+.dex-row__id > span { display: grid; min-width: 0; }
+.dex-row__name { font-weight: 500; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dex-row__id:hover .dex-row__name { text-decoration: underline; text-underline-offset: 3px; }
+.dex-row__meta { font-size: var(--fs-small); color: var(--faint); }
+.dex-row__state { display: flex; align-items: center; gap: 8px; }
+
+.types { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #5e5e5e; flex: none; }
+.dot--captured { background: var(--accent); }
+
+.star {
+  width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%;
+  border: 0; background: transparent; cursor: pointer; color: #6b6b6b;
+  transition: color 120ms, background-color 120ms, transform 160ms var(--ease-out);
+}
+.star svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+.star:hover { color: var(--text); background: var(--raised); }
+.star:active { transform: scale(0.88); }
+.star.is-on { color: var(--accent); }
+.star.is-on svg { fill: currentColor; }
+
+.dex-row--skeleton span { grid-column: 1 / -1; height: 56px; border-radius: 12px; background: var(--surface); animation: pulse 1.4s ease-in-out infinite; }
+
+.dex-empty { display: grid; justify-items: start; gap: 14px; padding: 32px 8px; color: var(--muted); border-bottom: 1px solid var(--rule); }
+
+.pager { display: flex; align-items: center; justify-content: center; gap: 16px; }
+
+@media (max-width: 760px) {
+  .title-row { align-items: flex-start; }
+  .dex-row { grid-template-columns: 1fr auto; grid-template-areas: 'id fav' 'types state'; row-gap: 6px; padding: 12px 0; min-height: 0; }
+  .dex-row > :nth-child(1) { grid-area: id; }
+  .dex-row > :nth-child(2) { grid-area: types; padding-left: 68px; }
+  .dex-row > :nth-child(3) { grid-area: state; font-size: 13px; color: var(--muted); }
+  .dex-row > :nth-child(4) { grid-area: fav; justify-self: end; }
+  .dex-row > :nth-child(3) { justify-self: end; }
+  .dex-row--head { display: none; }
+  .toolbar__sort label { display: none; }
+}

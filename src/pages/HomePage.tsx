@@ -4,26 +4,19 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import type { PokedexEntry, PokedexStats } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { KantoWall } from '../components/KantoWall'
 import type { DexState } from '../components/KantoWall'
+import { allEntries } from '../lib/entries'
 import { KANTO_TOTAL, TYPE_COLOR, TYPE_ES } from '../lib/pokemon'
 import './HomePage.css'
 
-/** La API pagina de 100 en 100: pide páginas hasta tenerlas todas. */
-async function allEntries(): Promise<PokedexEntry[]> {
-  const out: PokedexEntry[] = []
-  for (let offset = 0; ; offset += 100) {
-    const page = await api.pokedex({ limit: 100, offset })
-    out.push(...page)
-    if (page.length < 100) return out
-  }
-}
-
 export function HomePage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [entries, setEntries] = useState<PokedexEntry[] | null>(null)
   const [stats, setStats] = useState<PokedexStats | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -95,7 +88,7 @@ export function HomePage() {
         </div>
         {entries === null && !error
           ? <div className="kanto-skeleton" aria-busy="true" />
-          : <KantoWall states={states} />}
+          : <KantoWall states={states} onSelect={(id) => navigate(`/pokemon/${id}`)} />}
       </section>
     </div>
   )

@@ -1,0 +1,13 @@
+.toasts {
+  position: fixed; right: 20px; bottom: 20px; z-index: 50;
+  display: grid; gap: 8px; justify-items: end; pointer-events: none;
+}
+/* Flota sobre el contenido, así que es lo único con sombra. */
+.toast {
+  background: var(--raised-2); color: var(--text); padding: 10px 16px; border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); max-width: 360px;
+  animation: toast-in 220ms var(--ease-out);
+}
+.toast--error { background: var(--pill-negative-bg); color: var(--pill-negative-ink); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@media (max-width: 640px) { .toasts { left: 16px; right: 16px; bottom: 16px; } .toast { max-width: none; width: 100%; } }
