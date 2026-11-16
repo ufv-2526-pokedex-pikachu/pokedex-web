@@ -156,7 +156,7 @@ export function PokedexPage() {
 
       {error && <p className="alert" role="alert">{error}</p>}
 
-      <div className="dex-table" role="table" aria-label="Pokémon de tu Pokédex" aria-busy={entries === null}>
+      <div className="dex-table card" role="table" aria-label="Pokémon de tu Pokédex" aria-busy={entries === null}>
         <div className="dex-row dex-row--head" role="row">
           <span role="columnheader">Pokémon</span>
           <span role="columnheader">Tipos</span>

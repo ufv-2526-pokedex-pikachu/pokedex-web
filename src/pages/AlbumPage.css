@@ -12,7 +12,6 @@
 .album__slot { container-type: inline-size; }
 .album__link { display: block; border-radius: 10px; text-decoration: none; color: inherit; }
 .album__link:focus-visible { outline-offset: 4px; }
-.album__link:hover .card-back__face { background: #181818; }
 .album__skel { display: block; aspect-ratio: 63 / 88; border-radius: 10px; background: var(--surface); animation: pulse 1.4s ease-in-out infinite; }
 .album__empty { padding: 24px 0; }
 

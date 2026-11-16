@@ -10,6 +10,7 @@ import { useAuth } from '../auth/AuthContext'
 import { GoogleButton, googleEnabled } from '../components/GoogleButton'
 import { KantoWall } from '../components/KantoWall'
 import { Wordmark } from '../components/Mark'
+import { SkyScene, usePhase } from '../components/SkyScene'
 import './AuthPage.css'
 
 type Mode = 'login' | 'register'
@@ -25,6 +26,7 @@ function passwordProblem(p: string): string | null {
 
 export function AuthPage() {
   const { user, login, register, loginWithGoogle } = useAuth()
+  const phase = usePhase()
   const navigate = useNavigate()
   const location = useLocation()
   const [mode, setMode] = useState<Mode>('login')
@@ -78,11 +80,12 @@ export function AuthPage() {
   }
 
   return (
-    <div className="auth">
+    <div className={`auth is-${phase}`}>
+      <SkyScene phase={phase} />
       <main className="auth__panel">
         <Wordmark />
 
-        <div className="auth__body">
+        <div className="auth__body card">
           <h1 className="auth__title">{mode === 'login' ? 'Entra en tu Pokédex' : 'Empieza tu Pokédex'}</h1>
           <p className="muted auth__lead">
             Captura, organiza tus equipos y combate con los 151 Pokémon de Kanto.

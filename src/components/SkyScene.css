@@ -1,0 +1,20 @@
+.sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; transition: background-color 2s; }
+.sky__sun { position: absolute; right: 9%; top: 15%; width: 120px; height: 120px; border-radius: 50%; }
+.sky--noche .sky__sun { width: 84px; height: 84px; box-shadow: -18px 6px 0 0 #26305e inset; } /* taste-skill-ignore: luna creciente */
+
+/* Nubes: pastillas blancas que cruzan el cielo muy despacio. */
+.sky__cloud { position: absolute; height: 54px; border-radius: 999px; background: #fff; opacity: 0.95; animation: drift 90s linear infinite; }
+.sky__cloud::before { content: ''; position: absolute; left: 22%; bottom: 30%; width: 46%; height: 140%; border-radius: 999px; background: inherit; }
+.sky__cloud--a { left: 8%; top: 16%; width: 210px; }
+.sky__cloud--b { left: 48%; top: 26%; width: 160px; opacity: 0.8; animation-duration: 120s; animation-delay: -40s; }
+.sky__cloud--c { left: 72%; top: 9%; width: 120px; opacity: 0.7; animation-duration: 150s; animation-delay: -90s; }
+@keyframes drift { from { translate: -30vw 0; } to { translate: 30vw 0; } }
+
+.sky__star { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; animation: twinkle 3.2s ease-in-out infinite; }
+@keyframes twinkle { 50% { opacity: 0.25; } }
+
+.sky__hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 34vh; min-height: 220px; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sky__cloud, .sky__star { animation: none; }
+}

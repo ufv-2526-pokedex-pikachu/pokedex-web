@@ -1,6 +1,6 @@
 /**
- * Inicio: responde "¿cuánto me falta para completar Kanto?".
- * Lo más grande es el muro de los 151; encima, las cifras de /pokedex/stats en una sola tarjeta.
+ * Inicio: el saludo según la hora, tu compañero, tus cifras como pegatinas y el muro de Kanto.
+ * Responde de un vistazo a «¿cuánto me falta para completar Kanto?».
  */
 import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
@@ -10,13 +10,19 @@ import type { PokedexEntry, PokedexStats } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { KantoWall } from '../components/KantoWall'
 import type { DexState } from '../components/KantoWall'
+import { Mark } from '../components/Mark'
+import { Partner } from '../components/Partner'
+import { usePhase } from '../components/SkyScene'
+import { greetingAt } from '../lib/daytime'
 import { allEntries } from '../lib/entries'
-import { KANTO_TOTAL, TYPE_COLOR, TYPE_ES } from '../lib/pokemon'
+import { partnerLine, pickPartner, savedPartner } from '../lib/partner'
+import { KANTO_TOTAL, TYPE_COLOR, TYPE_ES, splitTypes } from '../lib/pokemon'
 import './HomePage.css'
 
 export function HomePage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const phase = usePhase()
   const [entries, setEntries] = useState<PokedexEntry[] | null>(null)
   const [stats, setStats] = useState<PokedexStats | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -32,51 +38,47 @@ export function HomePage() {
     for (const e of entries ?? []) m.set(e.pokemon_id, e.is_captured ? 'captured' : 'seen')
     return m
   }, [entries])
-
-  const kantoCaptured = useMemo(
-    () => (entries ?? []).filter((e) => e.is_captured && e.pokemon_id <= KANTO_TOTAL).length,
+  const colors = useMemo(
+    () => new Map((entries ?? []).map((e) => [e.pokemon_id, TYPE_COLOR[splitTypes(e.pokemon_types)[0]] ?? '#ccc'])),
     [entries],
   )
+
+  const kantoCaptured = (entries ?? []).filter((e) => e.is_captured && e.pokemon_id <= KANTO_TOTAL).length
   const missing = KANTO_TOTAL - kantoCaptured
+  const partner = entries && user ? pickPartner(entries, savedPartner(user.username)) : null
+  const line = partnerLine({
+    phase, captured: stats?.captured ?? 0, missing, streak: stats?.capture_streak_days ?? 0, hasPartner: Boolean(partner),
+  })
 
   return (
     <div className="home">
-      <div className="home__head title-row">
-        <div>
-        <h1 className="page-title">Hola, {user?.username}</h1>
-        <p className="muted">
-          {entries === null
-            ? 'Cargando tu Pokédex…'
-            : missing === 0
-              ? 'Has capturado los 151 Pokémon de Kanto.'
-              : `Te faltan ${missing} Pokémon para completar Kanto.`}
-        </p>
+      <section className="home__hero">
+        <div className="home__hello">
+          <h1 className="page-title home__title">¡{greetingAt(new Date().getHours())}, {user?.username}!</h1>
+          <p className="home__lead">
+            {entries === null ? 'Abriendo tu Pokédex…'
+              : missing === 0 ? 'Has capturado los 151 Pokémon de Kanto.'
+                : <>Te faltan <strong>{missing} Pokémon</strong> para completar Kanto. Llevas {kantoCaptured}.</>}
+          </p>
+          <div className="meter" role="progressbar" aria-valuemin={0} aria-valuemax={KANTO_TOTAL} aria-valuenow={kantoCaptured} aria-label="Kanto completado">
+            <span style={{ width: `${(kantoCaptured / KANTO_TOTAL) * 100}%` }} />
+          </div>
+          <div className="home__actions">
+            <Link to="/capturar" className="btn btn-primary btn-big"><Mark size={24} />Salir a capturar</Link>
+            <Link to="/album" className="btn btn-big">Ver mi álbum</Link>
+          </div>
         </div>
-        <Link to="/capturar" className="btn btn-primary">Capturar</Link>
-      </div>
+        {entries !== null && <Partner entry={partner} line={line} />}
+      </section>
 
       {error && <p className="alert" role="alert">{error}</p>}
 
-      <section className="card figures" aria-label="Resumen de tu Pokédex">
-        <Figure label="Kanto" value={entries ? `${kantoCaptured}` : null} unit={`/ ${KANTO_TOTAL}`} />
-        <Figure label="En tu Pokédex" value={stats ? `${stats.total_pokemon}` : null} />
-        <Figure label="Capturados" value={stats ? `${stats.captured}` : null} />
-        <Figure
-          label="Capturado"
-          value={stats ? stats.completion_percentage.toLocaleString('es-ES', { minimumFractionDigits: 1 }) : null}
-          unit="%"
-        />
-        <Figure label="Favoritos" value={stats ? `${stats.favorites}` : null} />
-        <div className="figure">
-          <span className="figure__label">Tipo más común</span>
-          {stats === null ? <span className="figure__value faint">…</span>
-            : stats.most_common_type
-              ? <span className="type figure__type" style={{ '--t': TYPE_COLOR[stats.most_common_type] } as CSSProperties}>
-                  {TYPE_ES[stats.most_common_type] ?? stats.most_common_type}
-                </span>
-              : <span className="figure__value faint">—</span>}
-        </div>
-        <Figure label="Racha de capturas" value={stats ? `${stats.capture_streak_days}` : null}
+      <section className="stickers" aria-label="Resumen de tu Pokédex">
+        <Sticker color="red" label="Capturados" value={stats?.captured} />
+        <Sticker color="blue" label="En tu Pokédex" value={stats?.total_pokemon} />
+        <Sticker color="yellow" label="Tipo más común"
+          value={stats ? (stats.most_common_type ? TYPE_ES[stats.most_common_type] ?? stats.most_common_type : '—') : undefined} small />
+        <Sticker color="green" label="Racha de capturas" value={stats?.capture_streak_days}
           unit={stats?.capture_streak_days === 1 ? 'día' : 'días'} />
       </section>
 
@@ -91,19 +93,20 @@ export function HomePage() {
         </div>
         {entries === null && !error
           ? <div className="kanto-skeleton" aria-busy="true" />
-          : <KantoWall states={states} onSelect={(id) => navigate(`/pokemon/${id}`)} />}
+          : <KantoWall states={states} colors={colors} onSelect={(id) => navigate(`/pokemon/${id}`)} />}
       </section>
     </div>
   )
 }
 
-function Figure({ label, value, unit }: { label: string; value: string | null; unit?: string }) {
+function Sticker({ color, label, value, unit, small = false }: {
+  color: 'red' | 'blue' | 'yellow' | 'green'; label: string; value: number | string | undefined; unit?: string; small?: boolean
+}) {
   return (
-    <div className="figure">
-      <span className="figure__label">{label}</span>
-      <span className="figure__value num">
-        {value ?? <span className="faint">…</span>}
-        {value !== null && unit && <span className="figure__unit"> {unit}</span>}
+    <div className={`sticker sticker--${color}`} style={{ '--tilt': color === 'red' ? '-1.4deg' : color === 'blue' ? '0.9deg' : color === 'yellow' ? '-0.7deg' : '1.2deg' } as CSSProperties}>
+      <span className="sticker__label">{label}</span>
+      <span className={`sticker__value num ${small ? 'is-small' : ''}`}>
+        {value ?? '…'}{value !== undefined && unit && <small> {unit}</small>}
       </span>
     </div>
   )

@@ -4,6 +4,7 @@
  * Es la pieza que identifica la app: de un vistazo se ve cuánto te falta.
  */
 import { memo } from 'react'
+import type { CSSProperties } from 'react'
 import { KANTO_TOTAL, dexNumber, spriteUrl } from '../lib/pokemon'
 import './KantoWall.css'
 
@@ -12,6 +13,8 @@ export type DexState = 'captured' | 'seen'
 interface Props {
   /** Estado de cada número de la Pokédex. Los que no están, se pintan como pendientes. */
   states: Map<number, DexState>
+  /** Color del tipo de cada Pokémon que tienes: tiñe su casilla. */
+  colors?: Map<number, string>
   /** En la pantalla de acceso todos se ven en gris, como invitación. */
   preview?: boolean
   onSelect?: (id: number) => void
@@ -19,7 +22,7 @@ interface Props {
 
 const IDS = Array.from({ length: KANTO_TOTAL }, (_, i) => i + 1)
 
-export const KantoWall = memo(function KantoWall({ states, preview = false, onSelect }: Props) {
+export const KantoWall = memo(function KantoWall({ states, colors, preview = false, onSelect }: Props) {
   return (
     <ol className={`kanto ${preview ? 'kanto--preview' : ''}`} aria-label="Pokédex de Kanto, 151 Pokémon">
       {IDS.map((id) => {
@@ -29,7 +32,7 @@ export const KantoWall = memo(function KantoWall({ states, preview = false, onSe
           ? <img src={spriteUrl(id)} alt="" loading="lazy" width={96} height={96} />
           : <span className="kanto__n num">{id}</span>
         return (
-          <li key={id} className={`kanto__cell ${state ? `is-${state}` : ''}`}>
+          <li key={id} className={`kanto__cell ${state ? `is-${state}` : ''}`} style={state === 'captured' && colors?.get(id) ? { '--t': colors.get(id) } as CSSProperties : undefined}>
             {onSelect ? (
               <button type="button" className="kanto__btn" onClick={() => onSelect(id)} aria-label={label}>
                 {inner}

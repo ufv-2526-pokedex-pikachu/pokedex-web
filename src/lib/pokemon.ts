@@ -23,6 +23,11 @@ export function spriteUrl(id: number): string {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
 }
 
+/** Sprite animado (estilo Showdown, de PokeAPI). Existe para todos los Pokémon; si falla, se usa el estático. */
+export function animatedUrl(id: number, back = false): string {
+  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${back ? 'back/' : ''}${id}.gif`
+}
+
 export function artworkUrl(id: number): string {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
 }

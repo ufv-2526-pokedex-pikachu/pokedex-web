@@ -1,12 +1,10 @@
-/** Marca de la app: una Poké Ball plana dibujada en SVG, junto al nombre. */
-export function Mark({ size = 22 }: { size?: number }) {
+/** Marca de la app: una Poké Ball de juguete, con el mismo contorno de tinta que el resto de la interfaz. */
+export function Mark({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-      <circle cx="16" cy="16" r="15" fill="#fff" />
-      <path d="M1 16a15 15 0 0 1 30 0z" fill="#e5484d" />
-      <rect x="1" y="14.6" width="30" height="2.8" fill="#000" />
-      <circle cx="16" cy="16" r="5.4" fill="#000" />
-      <circle cx="16" cy="16" r="2.8" fill="#fff" />
+      <circle cx="16" cy="16" r="14.2" fill="#fff" stroke="#1b2440" strokeWidth="2.6" />
+      <path d="M1.8 16a14.2 14.2 0 0 1 28.4 0z" fill="#e8403a" stroke="#1b2440" strokeWidth="2.6" strokeLinejoin="round" />
+      <circle cx="16" cy="16" r="5" fill="#fff" stroke="#1b2440" strokeWidth="2.6" />
     </svg>
   )
 }

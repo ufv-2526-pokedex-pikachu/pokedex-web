@@ -1,18 +1,49 @@
-.mon { display: grid; gap: var(--gap); max-width: 1320px; }
-.mon__nav { display: flex; justify-content: space-between; align-items: center; margin: -8px -10px 4px; }
+.mon { display: grid; gap: 26px; }
+.mon__nav { display: flex; justify-content: space-between; align-items: center; margin: -10px -12px -6px; }
 .mon__steps { display: flex; gap: 4px; }
 
-/* Cabecera: el propio Pokémon, grande. */
-.mon__head { display: grid; grid-template-columns: 340px 1fr; gap: 40px; align-items: center; padding: 32px; }
-.mon__card-skel { width: 300px; aspect-ratio: 63 / 88; border-radius: 14px; background: var(--raised); animation: pulse 1.4s ease-in-out infinite; justify-self: center; }
-.mon__info { display: grid; gap: 10px; justify-items: start; }
-.mon__name { font-size: 32px; line-height: 38px; font-weight: 600; letter-spacing: -0.02em; }
-.mon__status { display: flex; align-items: center; gap: 8px; color: var(--muted); }
-.mon__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-.mon__types-skel { width: 120px; height: 22px; border-radius: 99px; background: var(--raised); }
-.btn.is-fav { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, #000); }
-.btn-danger { background: var(--negative); border-color: var(--negative); color: #fff; }
-.btn-danger:hover { background: #cc3d42; border-color: #cc3d42; }
+/*
+ * Cabecera: el Pokémon en su hábitat, a todo color. Tres columnas: datos, el Pokémon animado y su carta.
+ * El escenario va detrás, dentro de un marco pegatina.
+ */
+.mon__hero {
+  position: relative; overflow: hidden; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 1fr) 320px; align-items: center; gap: 24px;
+  min-height: 520px; padding: 48px 40px 40px;
+  border: var(--line) solid var(--ink); border-radius: 32px; box-shadow: var(--shadow);
+}
+.mon__hero > :not(.habitat) { position: relative; z-index: 1; }
+.mon__info { display: grid; gap: 12px; justify-items: start; align-self: start; padding-top: 28px; }
+.mon__num {
+  padding: 4px 12px; border-radius: 999px; background: var(--surface); border: 2px solid var(--ink);
+  font-family: var(--display); font-weight: 600; font-size: 16px;
+}
+/* El nombre en blanco con contorno de tinta: se lee sobre cualquier escenario. */
+.mon__name {
+  font-family: var(--display); font-size: clamp(46px, 5vw, 78px); line-height: 0.95; font-weight: 700; color: #fff;
+  -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; /* taste-skill-ignore: rótulo con contorno */
+  overflow-wrap: anywhere;
+}
+.mon__species { padding: 2px 12px; border-radius: 999px; background: var(--surface); border: 2px solid var(--ink); font-weight: 600; }
+.mon__status {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 14px;
+  background: var(--surface); border: 2px solid var(--ink); font-weight: 600;
+}
+.mon__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.mon__types-skel { width: 120px; height: 26px; border-radius: 99px; background: rgba(255, 255, 255, 0.6); }
+.btn.is-fav { background: var(--yellow); }
+
+.mon__stage { display: grid; place-items: end center; align-self: end; min-height: 300px; }
+.mon__platform { position: absolute; bottom: 6px; width: 78%; height: 54px; border-radius: 50%; background: rgba(27, 36, 64, 0.28); }
+.mon__sprite {
+  position: relative; bottom: 26px; height: 230px; width: auto; max-width: 100%; object-fit: contain;
+  transform-origin: bottom center; animation: mon-in 600ms var(--ease-spring) both;
+}
+@keyframes mon-in { from { transform: translateY(30px) scale(0.6); opacity: 0; } }
+.mon__card { display: grid; justify-items: center; align-self: center; }
+.mon__card-skel { width: 300px; aspect-ratio: 63 / 88; border-radius: 14px; background: rgba(255, 255, 255, 0.6); animation: pulse 1.4s ease-in-out infinite; }
+
+.mon__cry { display: grid; gap: 14px; }
 
 /* Rejilla de 6 columnas: stats 4 + datos 2; tu registro ocupa las 6. */
 .mon__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
@@ -21,33 +52,37 @@
 .mon__evo { grid-column: span 6; display: grid; }
 .mon__entry { grid-column: span 6; display: grid; gap: 18px; }
 
-
 .facts { margin: 0; display: grid; gap: 14px; }
 .facts div { display: grid; gap: 2px; }
-.facts dt { font-size: var(--fs-small); color: var(--muted); }
-.facts dd { margin: 0; font-size: 15px; }
+.facts dt { font-size: var(--fs-small); font-weight: 600; color: var(--muted); }
+.facts dd { margin: 0; font-family: var(--display); font-weight: 600; font-size: 19px; }
 .sprites { display: grid; gap: 8px; }
 
-.segmented { display: inline-flex; padding: 3px; background: var(--raised); border-radius: 99px; justify-self: start; }
+.segmented { display: inline-flex; padding: 4px; background: var(--raised); border: 2.5px solid var(--ink); border-radius: 99px; justify-self: start; }
 .segmented button {
-  height: 30px; padding: 0 14px; border: 0; border-radius: 99px; background: transparent; color: var(--muted);
-  cursor: pointer; font-weight: 500; transition: background-color 120ms, color 120ms;
+  height: 34px; padding: 0 16px; border: 0; border-radius: 99px; background: transparent; color: var(--ink);
+  cursor: pointer; font-family: var(--display); font-weight: 600; font-size: 15px; transition: background-color 120ms, color 120ms;
 }
-.segmented button:hover { color: var(--text); }
-.segmented button[aria-pressed='true'] { background: var(--text); color: #000; }
+.segmented button[aria-pressed='true'] { background: var(--ink); color: #fff; }
 
 .entry-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; align-items: end; }
 .entry-form__notes { grid-row: span 2; align-self: stretch; }
-.textarea { height: 100%; min-height: 96px; padding: 12px 14px; resize: vertical; line-height: 20px; }
-.input:disabled { opacity: 0.5; }
+.textarea { height: 100%; min-height: 96px; padding: 12px 14px; resize: vertical; line-height: 1.45; }
 .entry-form__actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
 .confirm { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-
+@media (max-width: 1180px) {
+  .mon__hero { grid-template-columns: minmax(0, 1fr) 300px; }
+  .mon__stage { grid-column: 1; grid-row: 2; min-height: 240px; }
+  .mon__card { grid-column: 2; grid-row: 1 / span 2; }
+}
 @media (max-width: 900px) {
-  .mon__head { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
-    .mon__stats, .mon__facts, .mon__entry, .mon__evo { grid-column: 1 / -1; }
+  .mon__hero { grid-template-columns: 1fr; padding: 28px 18px 24px; min-height: 0; }
+  .mon__info { padding-top: 24px; }
+  .mon__stage, .mon__card { grid-column: 1; grid-row: auto; }
+  .mon__sprite { height: 180px; }
+  .mon__stats, .mon__facts, .mon__entry, .mon__evo { grid-column: 1 / -1; }
   .entry-form { grid-template-columns: 1fr; }
   .entry-form__notes { grid-row: auto; }
-  .stat { grid-template-columns: 96px 36px 1fr; }
+  .stat { grid-template-columns: 96px 40px 1fr; }
 }

@@ -1,36 +1,53 @@
-.home { display: grid; gap: var(--gap); max-width: 1320px; }
-.home__head { margin-bottom: 10px; }
+.home { display: grid; gap: 36px; }
 
-/* Las cifras van en una sola tarjeta dividida, no en siete tarjetas sueltas. */
-.figures {
-  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
-  padding: 18px 0;
+/* Saludo a la izquierda, compañero a la derecha. */
+.home__hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr); align-items: center; gap: 32px; }
+.home__hello { display: grid; gap: 18px; justify-items: start; }
+.home__title { font-size: clamp(44px, 5.6vw, 76px); line-height: 1; }
+.home__lead { font-size: 20px; max-width: 560px; }
+.meter { width: min(560px, 100%); height: 28px; border-radius: 999px; background: var(--surface); border: var(--line) solid var(--ink); overflow: hidden; }
+.meter span { display: block; height: 100%; background: var(--yellow); border-right: var(--line) solid var(--ink); transition: width 1s var(--ease-out); }
+.home__actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.btn-big { height: 60px; padding: 0 28px; font-size: 21px; border-width: var(--line); box-shadow: var(--shadow); }
+.btn-big:hover { box-shadow: 0 6px 0 var(--ink); }
+
+/* Cifras como pegatinas de colores, cada una un poco girada. */
+.stickers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.sticker {
+  display: grid; gap: 2px; padding: 18px 22px; border-radius: 26px;
+  border: var(--line) solid var(--ink); box-shadow: var(--shadow); color: var(--ink);
+  transform: rotate(var(--tilt)); transition: transform 220ms var(--ease-spring);
 }
-.figure { display: grid; gap: 6px; align-content: start; padding: 0 var(--pad); border-left: 1px solid var(--raised); }
-.figure:first-child { border-left: 0; }
-.figure__label { font-size: var(--fs-small); color: var(--muted); line-height: 16px; }
-.figure__value { font-size: var(--fs-kpi); line-height: 30px; font-weight: 500; }
-.figure__unit { font-size: var(--fs-body); color: var(--faint); font-weight: 400; }
-.figure__type { justify-self: start; margin-top: 4px; }
+.sticker:hover { transform: rotate(0deg) scale(1.03); }
+.sticker--red { background: var(--red); color: #fff; }
+.sticker--blue { background: var(--blue); color: #fff; }
+.sticker--yellow { background: var(--yellow); }
+.sticker--green { background: var(--green); }
+.sticker__label { font-weight: 600; font-size: 15px; }
+.sticker__value { font-family: var(--display); font-weight: 700; font-size: 54px; line-height: 1; }
+.sticker__value.is-small { font-size: 38px; line-height: 1.25; }
+.sticker__value small { font-size: 24px; }
 
 .kanto-card { display: grid; gap: 18px; }
 .kanto-card__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); }
+.kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); }
 .kanto-skeleton { height: 520px; border-radius: var(--radius-inner); background: var(--raised); animation: pulse 1.4s ease-in-out infinite; }
 
-.legend { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; font-size: var(--fs-small); color: var(--muted); }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; font-size: 14px; font-weight: 600; color: var(--muted); }
 .legend li { display: flex; align-items: center; gap: 6px; }
-.legend__swatch { width: 12px; height: 12px; border-radius: 3px; background: var(--raised); }
-.legend__swatch.is-captured { background: color-mix(in srgb, var(--accent) 55%, var(--raised)); }
-.legend__swatch.is-seen { background: #525252; }
+.legend__swatch { width: 16px; height: 16px; border-radius: 5px; background: var(--raised); border: 2px solid var(--ink); }
+.legend__swatch.is-captured { background: #ffd9b8; }
+.legend__swatch.is-seen { background: var(--raised); border-style: dashed; }
 
-@media (max-width: 1180px) {
-  .figures { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 18px; }
-  .figure:nth-child(5) { border-left: 0; }
+@media (max-width: 960px) {
+  .home__hero { grid-template-columns: 1fr; }
+  .stickers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .figure:nth-child(odd) { border-left: 0; }
-  .figure:nth-child(even) { border-left: 1px solid var(--raised); }
-  .kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
+  .home { gap: 28px; }
+  .home__lead { font-size: 18px; }
+  .btn-big { height: 54px; font-size: 18px; padding: 0 20px; }
+  .sticker__value { font-size: 42px; }
+  .sticker__value.is-small { font-size: 28px; }
+  .kanto-card .kanto { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
 }

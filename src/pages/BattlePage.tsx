@@ -16,6 +16,7 @@ import { buildFighter, mvp, newBattle, playTurn } from '../lib/battle'
 import { pokemonDetail } from '../lib/entries'
 import { habitatFor } from '../lib/habitat'
 import { HabitatScene } from '../components/HabitatScene'
+import { Sprite } from '../components/Sprite'
 import { KANTO_TOTAL, TYPE_COLOR, displayName, spriteUrl } from '../lib/pokemon'
 import { effectiveness } from '../lib/typechart'
 import './BattlePage.css'
@@ -276,12 +277,12 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
           <HpBox fighter={foe} className="arena-field__foe-box" />
           <div className={`arena-field__mon arena-field__mon--foe ${anim.attacker === 'foe' ? 'is-attacking' : ''} ${anim.hit === 'foe' ? 'is-hit' : ''} ${foe.hp <= 0 ? 'is-fainted' : ''}`} key={`f-${foe.id}`}>
             <span className="arena-field__pad" aria-hidden="true" />
-            {foe.front && <img src={foe.front} alt={foe.name} width={192} height={192} />}
+            <Sprite id={foe.id} alt={foe.name} />
             {anim.fx?.side === 'foe' && <HitEffect fx={anim.fx} />}
           </div>
           <div className={`arena-field__mon arena-field__mon--me ${anim.attacker === 'player' ? 'is-attacking' : ''} ${anim.hit === 'player' ? 'is-hit' : ''} ${me.hp <= 0 ? 'is-fainted' : ''}`} key={`m-${me.id}`}>
             <span className="arena-field__pad" aria-hidden="true" />
-            <img src={me.back ?? me.front ?? ''} alt={me.name} width={192} height={192} />
+            <Sprite id={me.id} back alt={me.name} />
             {anim.fx?.side === 'player' && <HitEffect fx={anim.fx} />}
           </div>
           <HpBox fighter={me} mine className="arena-field__me-box" />

@@ -4,21 +4,25 @@
  * Si no está, se puede añadir desde aquí con POST /pokedex.
  */
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { CSSProperties, FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
 import { CryWave } from '../components/CryWave'
 import { EvolutionChain } from '../components/EvolutionChain'
+import { HabitatScene } from '../components/HabitatScene'
 import { HoloCard } from '../components/HoloCard'
+import { Sprite } from '../components/Sprite'
 import { CARD_TRANSITION } from '../components/useHoloTilt'
 import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { allEntries, pokemonDetail } from '../lib/entries'
+import { HABITAT_ES, habitatFor } from '../lib/habitat'
+import { savePartner } from '../lib/partner'
 import { formatDate, localDay, toApiDate, todayIso } from '../lib/format'
-import { KANTO_TOTAL, dexNumber, displayName } from '../lib/pokemon'
+import { KANTO_TOTAL, TYPE_COLOR, dexNumber, displayName } from '../lib/pokemon'
 import './PokemonPage.css'
 
 const STAT_ES: Record<string, string> = {
@@ -110,21 +114,15 @@ export function PokemonPage() {
 
       {!error && (
         <>
-          <section className="card mon__head">
-            {detail ? (
-              <HoloCard
-                detail={detail} shiny={shiny} trainer={user?.username}
-                owned={entry === undefined || entry === null ? null : entry.is_captured ? 'captured' : 'seen'}
-                nickname={entry?.nickname} captureDate={entry?.capture_date}
-              />
-            ) : <div className="mon__card-skel" aria-busy="true" style={{ viewTransitionName: CARD_TRANSITION }} />}
+          <section className="mon__hero" aria-label={`${entry?.nickname ?? name} en su hábitat`}>
+            {detail && <HabitatScene habitat={habitatFor(detail.types)} label={HABITAT_ES[habitatFor(detail.types)]} />}
             <div className="mon__info">
-              <p className="faint num">{dexNumber(id)}{id <= KANTO_TOTAL && ' · Kanto'}</p>
+              <p className="mon__num num">{dexNumber(id)}{id <= KANTO_TOTAL && ' · Kanto'}</p>
               <h1 className="mon__name">{entry?.nickname ?? name}</h1>
-              {entry?.nickname && <p className="muted">{name}</p>}
+              {entry?.nickname && <p className="mon__species">{name}</p>}
               {detail ? <TypePills types={detail.types} /> : <span className="mon__types-skel" />}
               <p className="mon__status">
-                {entry === undefined ? <span className="faint">Comprobando tu Pokédex…</span>
+                {entry === undefined ? 'Comprobando tu Pokédex…'
                   : entry === null ? <><span className="dot" aria-hidden="true" />No está en tu Pokédex</>
                     : entry.is_captured
                       ? <><span className="dot dot--captured" aria-hidden="true" />Capturado{entry.capture_date && ` el ${formatDate(entry.capture_date)}`}</>
@@ -142,14 +140,36 @@ export function PokemonPage() {
                     <Icon name="star" filled={entry.favorite} />Favorito
                   </button>
                 )}
-                <CryWave id={id} name={name} />
+                {entry?.is_captured && user && (
+                  <button type="button" className="btn" onClick={() => { savePartner(user.username, id); toast(`${entry.nickname ?? name} es ahora tu compañero`) }}>
+                    Hacer compañero
+                  </button>
+                )}
                 <button type="button" className="btn" onClick={downloadCard}>Carta en PDF</button>
               </div>
             </div>
+            <div className="mon__stage">
+              <span className="mon__platform" aria-hidden="true" />
+              <Sprite key={id} id={id} alt={`${name} animado`} className="mon__sprite" />
+            </div>
+            <div className="mon__card">
+              {detail ? (
+                <HoloCard
+                  detail={detail} shiny={shiny} trainer={user?.username}
+                  owned={entry === undefined || entry === null ? null : entry.is_captured ? 'captured' : 'seen'}
+                  nickname={entry?.nickname} captureDate={entry?.capture_date}
+                />
+              ) : <div className="mon__card-skel" aria-busy="true" style={{ viewTransitionName: CARD_TRANSITION }} />}
+            </div>
+          </section>
+
+          <section className="card mon__cry" aria-labelledby="cry-title">
+            <h2 id="cry-title" className="card-title">Su grito</h2>
+            <CryWave id={id} name={name} />
           </section>
 
           <div className="mon__grid">
-            <section className="card mon__stats" aria-labelledby="stats-title">
+            <section className="card mon__stats" aria-labelledby="stats-title" style={detail ? { '--stat': TYPE_COLOR[detail.types[0]] } as CSSProperties : undefined}>
               <div className="card-head">
                 <h2 id="stats-title" className="card-title">Estadísticas base</h2>
                 {detail && <p className="muted num">Total {statTotal}</p>}

@@ -1,68 +1,59 @@
-/*
- * Marco en T: barra lateral de 220px y barra superior de 64px sobre el mismo negro,
- * separadas solo por líneas de 1px. El contenido deja 29px de margen a cada lado.
- */
-.shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: var(--topbar) 1fr;
-  grid-template-areas: 'side top' 'side main';
-}
-
-.sidebar {
-  grid-area: side; position: sticky; top: 0; height: 100vh;
-  border-right: 1px solid var(--rule); padding: 0 12px;
-  display: flex; flex-direction: column; gap: 12px;
-}
-.sidebar__brand { height: var(--topbar); display: flex; align-items: center; padding: 0 10px; }
-.sidebar nav { display: grid; gap: 2px; }
-
-/* Activo = el texto pasa de gris a blanco. Sin pastillas de color. */
-.nav__item {
-  height: 32px; display: flex; align-items: center; padding: 0 10px; border-radius: 8px;
-  color: #bbbbbb; text-decoration: none; font-weight: 500;
-  transition: color 120ms, background-color 120ms;
-}
-.nav__item:hover { color: var(--text); background: var(--surface); }
-.nav__item.active { color: var(--text); }
+/* Barra superior flotante tipo pegatina; el contenido va debajo, centrado y con aire. */
+.shell { min-height: 100vh; position: relative; isolation: isolate; }
 
 .topbar {
-  grid-area: top; position: sticky; top: 0; z-index: 5; background: var(--ground);
-  border-bottom: 1px solid var(--rule);
-  display: flex; align-items: center; gap: 12px; padding: 0 var(--gutter);
+  position: sticky; top: 16px; z-index: 20;
+  margin: 16px var(--gutter) 0; height: 72px; padding: 0 12px 0 20px;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: var(--line) solid var(--ink); border-radius: 999px; box-shadow: var(--shadow);
 }
-.topbar__title { font-size: var(--fs-section); font-weight: 600; }
-.topbar__menu { display: none; }
-.topbar__user {
-  margin-left: auto; display: flex; align-items: center; gap: 10px;
-  padding-left: 16px; border-left: 1px solid var(--rule); height: 100%;
+.topbar__brand { text-decoration: none; border-radius: 999px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 24px; }
+
+.topbar__nav { display: flex; gap: 4px; margin-left: 10px; }
+.nav__item {
+  height: 42px; padding: 0 16px; border-radius: 999px; display: inline-flex; align-items: center;
+  font-family: var(--display); font-weight: 600; font-size: 17px; text-decoration: none; color: var(--ink);
+  border: 2.5px solid transparent;
+  transition: background-color 120ms, transform 160ms var(--ease-spring);
 }
-.topbar__name { font-weight: 500; }
+.nav__item:hover { background: var(--raised); }
+.nav__item:active { transform: scale(0.95); }
+.nav__item.active { background: var(--red); color: #fff; border-color: var(--ink); }
+
+.topbar__user { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.topbar__name { font-weight: 600; }
 .avatar {
-  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-  background: color-mix(in srgb, var(--accent) 22%, #111); color: var(--accent);
-  font-size: 13px; font-weight: 600;
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--yellow); border: 2.5px solid var(--ink);
+  font-family: var(--display); font-size: 19px; font-weight: 700;
 }
+.topbar__menu { display: none; width: 44px; padding: 0; }
 
-.canvas { grid-area: main; padding: 28px var(--gutter) 48px; min-width: 0; }
+.canvas { max-width: 1360px; margin: 0 auto; padding: 40px var(--gutter) 120px; min-width: 0; color: var(--on-sky); }
+.canvas .muted { color: var(--on-sky-muted); }
+.canvas .card .muted, .canvas .card .faint { color: inherit; }
+.canvas .card .muted { color: var(--muted); }
+.canvas .card .faint { color: var(--faint); }
+/* De noche el cielo es oscuro: lo que va encima pasa a blanco. */
+.shell.is-noche { --on-sky: #ffffff; --on-sky-muted: #d6dcf2; }
+.shell.is-noche .canvas > * > .title-row .btn-ghost, .shell.is-noche .mon__nav .btn-ghost { color: #fff; }
 
-@media (max-width: 860px) {
-  .shell { grid-template-columns: 1fr; grid-template-rows: 56px 1fr; grid-template-areas: 'top' 'main'; }
-  .topbar { padding: 0 8px 0 4px; }
+@media (max-width: 1100px) {
+  .topbar__nav {
+    display: none; position: absolute; top: calc(100% + 12px); left: 0; right: 0;
+    flex-direction: column; gap: 6px; margin: 0; padding: 12px;
+    background: var(--surface); border: var(--line) solid var(--ink); border-radius: 26px; box-shadow: var(--shadow);
+  }
+  .topbar__nav.is-open { display: flex; animation: menu-in 200ms var(--ease-out); }
+  .nav__item { height: 50px; font-size: 19px; }
   .topbar__menu { display: inline-flex; }
-  .topbar__name { display: none; }
-  .sidebar {
-    position: fixed; inset: 56px 0 0 0; height: auto; z-index: 20;
-    background: var(--ground); border-right: 0; padding: 12px 16px;
-    transform: translateY(-8px); opacity: 0; pointer-events: none; visibility: hidden;
-    transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out), visibility 0s 160ms;
-  }
-  .sidebar.is-open {
-    transform: none; opacity: 1; pointer-events: auto; visibility: visible;
-    transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
-  }
-  .sidebar__brand { display: none; }
-  .nav__item { height: 48px; font-size: 16px; }
-  .canvas { padding: 20px 16px 40px; }
 }
+@media (max-width: 640px) {
+  :root { --gutter: 16px; }
+  .topbar { height: 62px; top: 10px; margin-top: 10px; padding: 0 8px 0 14px; }
+  .topbar__name, .topbar__logout { display: none; }
+  .wordmark { font-size: 21px; }
+  .canvas { padding-top: 28px; }
+}
+@keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } }

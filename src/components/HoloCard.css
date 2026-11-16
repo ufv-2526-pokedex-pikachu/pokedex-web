@@ -187,16 +187,22 @@
 .is-silhouette .holo__window img { filter: brightness(0) invert(0.28); }
 
 /* Reverso: diseño propio, la Poké Ball de la marca sobre un fondo liso. */
-.card-back { --w: 100cqw; width: 100%; aspect-ratio: 63 / 88; border-radius: 4.5% / 3.2%; background: #232323; padding: 3.2%; }
+/* Reverso: diseño propio, azul con la Poké Ball de la marca, como el dorso de una carta de verdad. */
+.card-back {
+  --w: 100cqw; width: 100%; aspect-ratio: 63 / 88; border-radius: 4.5% / 3.2%; padding: 3.2%;
+  background: var(--ink); box-shadow: 0 4px 0 rgba(27, 36, 64, 0.35);
+  transition: transform 200ms var(--ease-spring);
+}
+.album__link:hover .card-back { transform: translateY(-4px) rotate(-1deg); }
 .card-back__face {
-  height: 100%; border-radius: 3.2% / 2.3%; background: #141414;
+  height: 100%; border-radius: 3.2% / 2.3%; background: #3567d6;
   display: grid; place-items: center; align-content: center; gap: 6%;
-  outline: 1px solid #262626; outline-offset: -7%; /* taste-skill-ignore: filete impreso del reverso */
+  outline: 2px solid rgba(255, 255, 255, 0.35); outline-offset: -7%; /* taste-skill-ignore: filete impreso del reverso */
 }
 .card-back__ring {
-  width: calc(var(--w) * 0.42); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
-  background: #1c1c1c; filter: grayscale(1); opacity: 0.55;
+  width: calc(var(--w) * 0.46); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background: #2a56b8;
 }
-.card-back__ring svg { width: 70%; height: 70%; }
-.card-back__word { font-size: calc(var(--w) * 0.075); font-weight: 600; color: #4a4a4a; letter-spacing: 0.02em; }
-.card-back__num { font-size: calc(var(--w) * 0.07); color: #5e5e5e; }
+.card-back__ring svg { width: 78%; height: 78%; }
+.card-back__word { font-family: var(--display); font-size: calc(var(--w) * 0.09); font-weight: 700; color: #fff; }
+.card-back__num { font-family: var(--display); font-size: calc(var(--w) * 0.075); font-weight: 600; color: rgba(255, 255, 255, 0.78); }

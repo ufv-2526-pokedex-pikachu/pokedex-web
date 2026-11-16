@@ -29,9 +29,9 @@
 .arena-field__mon { z-index: 1; position: relative; display: grid; place-items: end center; }
 .arena-field__mon--foe { grid-column: 2; grid-row: 1; padding-bottom: 6px; }
 .arena-field__mon--me { grid-column: 1; grid-row: 2; padding-bottom: 0; }
-.arena-field__mon img { position: relative; width: 192px; height: 192px; image-rendering: pixelated; animation: enter 420ms var(--ease-out); }
-.arena-field__mon--me img { width: 224px; height: 224px; margin-bottom: -36px; }
-.arena-field__pad { position: absolute; bottom: 10px; width: 190px; height: 34px; border-radius: 50%; background: #0f0f0f; }
+.arena-field__mon img { position: relative; width: 192px; height: 192px; object-fit: contain; object-position: bottom; image-rendering: pixelated; animation: enter 420ms var(--ease-out); }
+.arena-field__mon--me img { width: 230px; height: 210px; margin-bottom: 4px; }
+.arena-field__pad { position: absolute; bottom: 10px; width: 190px; height: 34px; border-radius: 50%; background: rgba(27, 36, 64, 0.3); }
 .arena-field__mon--me .arena-field__pad { bottom: -6px; width: 220px; }
 
 .arena-field__mon--me.is-attacking img { animation: lunge-up 420ms var(--ease-out); }
@@ -80,14 +80,15 @@
 @keyframes float-up { from { opacity: 0; translate: 0 12px; } 20% { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 -34px; } }
 
 .hpbox {
-  width: min(280px, 100%); padding: 12px 14px; border-radius: 14px; background: var(--surface);
+  width: min(280px, 100%); padding: 12px 14px; border-radius: 18px; background: var(--surface);
+  border: var(--line) solid var(--ink); box-shadow: var(--shadow-sm);
   display: grid; gap: 8px; position: relative; z-index: 1;
 }
-.hpbox__name { font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.hpbox__name { font-family: var(--display); font-size: 18px; font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
 .hpbox__hp { font-size: 13px; color: var(--muted); text-align: right; }
 
 /* Barra de vida: el color dice cuánto queda (verde, ámbar, rojo). */
-.hpbar { display: block; height: 8px; border-radius: 99px; background: #2a2a2a; overflow: hidden; }
+.hpbar { display: block; height: 14px; border-radius: 99px; background: var(--raised); border: 2px solid var(--ink); overflow: hidden; }
 .hpbar span {
   display: block; height: 100%; border-radius: inherit; transform-origin: left;
   transform: scaleX(var(--w)); transition: transform 600ms var(--ease-out), background-color 300ms;
@@ -102,13 +103,13 @@
 .moves { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .move {
   display: grid; gap: 6px; justify-items: start; text-align: left; padding: 12px 14px; min-height: 88px;
-  border: 0; border-radius: 14px; background: var(--raised); cursor: pointer;
-  transition: background-color 120ms, transform 160ms var(--ease-out);
+  border: 2.5px solid var(--ink); border-radius: 18px; background: var(--surface); cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: background-color 120ms, transform 120ms var(--ease-out), box-shadow 120ms;
 }
-.move:hover:not(:disabled) { background: var(--raised-2); }
-.move:active:not(:disabled) { transform: scale(0.97); }
+.move:hover:not(:disabled) { background: #f6f8fc; transform: translateY(-1px); }
+.move:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
 .move:disabled { opacity: 0.5; cursor: default; }
-.move__name { font-weight: 600; }
+.move__name { font-family: var(--display); font-size: 18px; font-weight: 700; }
 .move__meta { display: flex; align-items: center; gap: 8px; }
 .move__eff { font-size: var(--fs-small); color: var(--faint); min-height: 16px; line-height: 16px; }
 .move__eff.is-good { color: var(--accent); }
@@ -141,7 +142,7 @@
 @media (max-width: 560px) {
   .arena-field { height: 300px; }
   .arena-field__mon img { width: 120px; height: 120px; }
-  .arena-field__mon--me img { width: 144px; height: 144px; margin-bottom: -22px; }
+  .arena-field__mon--me img { width: 150px; height: 140px; margin-bottom: 2px; }
   .arena-field__pad { width: 120px; height: 24px; }
   .arena-field__mon--me .arena-field__pad { width: 140px; }
   .arena-field__foe-box, .arena-field__me-box { margin: 10px; }
