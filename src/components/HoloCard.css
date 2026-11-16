@@ -1,0 +1,165 @@
+/*
+ * Carta holográfica.
+ * Variables que escribe el JavaScript: --rx/--ry (inclinación en grados), --px/--py (luz en %),
+ * --hyp (0 centro … 1 esquina). Se registran con @property para que también se puedan animar.
+ * taste-skill-ignore: los degradados de este archivo son el foil de la carta, su material, no decoración de página.
+ */
+@property --rx { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --ry { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --px { syntax: '<number>'; inherits: true; initial-value: 50; }
+@property --py { syntax: '<number>'; inherits: true; initial-value: 50; }
+@property --hyp { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+.holo-wrap { display: grid; justify-items: center; gap: 10px; }
+
+.holo {
+  --w: 300px;
+  width: var(--w); aspect-ratio: 63 / 88;
+  perspective: 900px;
+  touch-action: pan-y;
+  /* Al soltar, vuelve a su sitio despacio; mientras se mueve, sigue al puntero casi al instante. */
+  transition: --rx 700ms var(--ease-out), --ry 700ms var(--ease-out), --px 700ms var(--ease-out),
+    --py 700ms var(--ease-out), --hyp 700ms var(--ease-out);
+}
+.holo.is-active { transition: --rx 90ms linear, --ry 90ms linear, --px 90ms linear, --py 90ms linear, --hyp 90ms linear; }
+
+.holo__rotator {
+  position: relative; width: 100%; height: 100%;
+  border-radius: 4.5% / 3.2%;
+  transform: rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+  transform-style: preserve-3d;
+  /* Marco: el color del primer tipo, como el canto de una carta. */
+  background: color-mix(in srgb, var(--t1) 70%, #1a1a1a);
+  padding: 3.2%;
+  box-shadow: 0 2px 0 rgba(255, 255, 255, 0.06) inset; /* taste-skill-ignore: canto de la carta */
+  isolation: isolate;
+}
+/* La carta flota sobre la página: es el único objeto con sombra, y se mueve con la inclinación. */
+.holo__rotator::before {
+  content: ''; position: absolute; inset: 6% 6% 0; z-index: -1; border-radius: inherit;
+  background: #000; filter: blur(22px); opacity: calc(0.45 + var(--hyp) * 0.25);
+  transform: translate(calc(var(--ry) * -0.9px), calc(14px + var(--rx) * 0.9px)) translateZ(-40px);
+}
+
+.holo__face {
+  position: relative; height: 100%; overflow: hidden;
+  border-radius: 3.2% / 2.3%;
+  background: color-mix(in srgb, var(--t1) 16%, #121212);
+  display: grid; grid-template-rows: auto auto 1fr auto auto auto auto; gap: 0;
+  padding: 3.5% 5% 3%;
+  color: #fff;
+}
+
+.holo__top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.holo__name { font-size: calc(var(--w) * 0.068); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.holo__hp { font-size: calc(var(--w) * 0.06); font-weight: 600; white-space: nowrap; }
+.holo__hp small { font-size: 0.55em; font-weight: 500; margin-right: 3px; color: rgba(255, 255, 255, 0.75); }
+.holo__species { font-size: calc(var(--w) * 0.036); color: rgba(255, 255, 255, 0.72); margin-top: -2px; }
+
+/* Ventana de la ilustración: el fondo es el segundo tipo; aquí va el foil. */
+.holo__window {
+  position: relative; margin-top: 3%;
+  border-radius: 3px; overflow: hidden;
+  background: color-mix(in srgb, var(--t2) 38%, #1b1b1b);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--t1) 55%, #000); /* taste-skill-ignore: filete del marco de la ilustración */
+  display: grid; place-items: center; min-height: 0;
+}
+.holo__window img {
+  position: relative; z-index: 2; width: 86%; height: 86%; object-fit: contain;
+  transform: translate(calc(var(--ry) * 0.35px), calc(var(--rx) * -0.35px)); /* un pelo de paralaje */
+  -webkit-user-drag: none; user-select: none;
+}
+
+/* Foil arcoíris: se desplaza con la luz y brilla más cuanto más se inclina la carta. */
+.holo__foil {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(115deg, /* taste-skill-ignore: foil */
+      hsl(2 85% 64%) 0%, hsl(48 90% 62%) 7%, hsl(140 70% 58%) 14%,
+      hsl(195 85% 60%) 21%, hsl(265 80% 68%) 28%, hsl(330 80% 64%) 35%, hsl(2 85% 64%) 42%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 5px); /* taste-skill-ignore: foil */
+  background-size: 360% 360%, 100% 100%;
+  background-position: calc(var(--px) * 1%) calc(var(--py) * 1%), center;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  filter: brightness(0.75) contrast(1.35) saturate(1.1);
+  transition: opacity 300ms;
+}
+.is-holo .holo__foil { opacity: calc(0.18 + var(--hyp) * 0.62); }
+
+/* Shiny: además del arcoíris, destellos que se mueven en sentido contrario a la luz. */
+.is-shiny.is-holo .holo__foil {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.6px), /* taste-skill-ignore: foil */
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 0 0.8px, transparent 1.4px), /* taste-skill-ignore: foil */
+    repeating-linear-gradient(115deg, /* taste-skill-ignore: foil */
+      hsl(48 95% 66%) 0%, hsl(190 90% 66%) 9%, hsl(300 85% 72%) 18%, hsl(48 95% 66%) 27%);
+  background-size: 23px 31px, 13px 17px, 300% 300%;
+  background-position:
+    calc(var(--px) * -0.6px) calc(var(--py) * -0.6px),
+    calc(var(--px) * 0.4px) calc(var(--py) * 0.5px),
+    calc(var(--px) * 1%) calc(var(--py) * 1%);
+}
+
+/* Brillo de la luz sobre toda la carta, donde apunta el puntero. */
+.holo__glare {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle at calc(var(--px) * 1%) calc(var(--py) * 1%), /* taste-skill-ignore: foil */
+    rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.12) 28%, rgba(255, 255, 255, 0) 55%);
+  mix-blend-mode: overlay;
+  opacity: calc(var(--hyp) * 0.9);
+}
+
+.holo__strip {
+  display: flex; justify-content: space-between; gap: 6px; margin-top: 2.5%;
+  font-size: calc(var(--w) * 0.034); color: rgba(255, 255, 255, 0.78);
+  padding: 1.5% 2.5%; border-radius: 3px; background: rgba(0, 0, 0, 0.28);
+}
+
+.holo__moves { list-style: none; margin: 4% 0 0; padding: 0; display: grid; gap: 2.5%; }
+.holo__moves li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; font-size: calc(var(--w) * 0.047); }
+.holo__move-dot { width: calc(var(--w) * 0.04); height: calc(var(--w) * 0.04); border-radius: 50%; }
+.holo__move-name { font-weight: 600; }
+.holo__move-power { font-weight: 600; font-size: 1.15em; }
+
+.holo__foot {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4%;
+  padding-top: 3%; border-top: 1px solid rgba(255, 255, 255, 0.12); /* taste-skill-ignore: separación impresa de la carta */
+}
+.holo__foot > div { display: grid; gap: 4px; justify-items: start; }
+.holo__label { font-size: calc(var(--w) * 0.03); color: rgba(255, 255, 255, 0.7); }
+.holo__pills { display: flex; gap: 4px; flex-wrap: wrap; }
+.holo__pills .type { height: calc(var(--w) * 0.06); padding: 0 calc(var(--w) * 0.025); font-size: calc(var(--w) * 0.033); }
+.holo__mark {
+  display: flex; justify-content: space-between; gap: 6px; margin-top: 3%;
+  font-size: calc(var(--w) * 0.028); color: rgba(255, 255, 255, 0.62);
+}
+
+/* Sin capturar: carta apagada, sin foil, con un sello. */
+.is-dull .holo__window img { filter: grayscale(1) brightness(0.55); }
+.is-dull .holo__face { background: #151515; }
+.is-dull .holo__rotator { background: #2a2a2a; }
+.holo__stamp {
+  position: absolute; z-index: 3; bottom: 8%; right: 6%;
+  padding: 3px 10px; border-radius: 99px; font-size: calc(var(--w) * 0.036); font-weight: 600;
+  background: rgba(0, 0, 0, 0.6); color: #ddd;
+}
+
+/* Sin interacción, la carta se balancea un poco para que se note que está viva. */
+@keyframes holo-idle {
+  0%, 100% { --ry: -7; --px: 30; --hyp: 0.32; }
+  50% { --ry: 7; --px: 70; --hyp: 0.32; }
+}
+.holo.is-holo:not(.is-active) { animation: holo-idle 6s ease-in-out infinite; }
+
+.holo__gyro { font-size: 13px; }
+
+@media (max-width: 420px) {
+  .holo { --w: min(300px, calc(100vw - 72px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .holo.is-holo:not(.is-active) { animation: none; }
+  .holo, .holo.is-active { transition: none; }
+  .holo__rotator { transform: none; }
+  .holo__window img { transform: none; }
+}

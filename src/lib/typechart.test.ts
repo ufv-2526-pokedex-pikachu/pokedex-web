@@ -17,6 +17,7 @@ describe('tabla de tipos', () => {
 
   it('debilidades de Charizard', () => {
     expect(weaknesses(['fire', 'flying']).sort()).toEqual(['electric', 'rock', 'water'])
+    expect(weaknesses(['fire', 'flying'])[0]).toBe('rock') // ×4 va primero
   })
 
   it('debilidad compartida solo si la mitad es débil y nadie la resiste', () => {

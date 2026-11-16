@@ -41,9 +41,11 @@ export function effectiveness(attack: string, defender: string[]): number {
   }, 1)
 }
 
-/** Tipos de ataque que hacen daño x2 o más a un Pokémon con estos tipos. */
+/** Tipos de ataque que hacen daño x2 o más a un Pokémon con estos tipos, primero los x4. */
 export function weaknesses(defender: string[]): string[] {
-  return ALL_TYPES.filter((a) => effectiveness(a, defender) >= 2)
+  return ALL_TYPES
+    .filter((a) => effectiveness(a, defender) >= 2)
+    .sort((a, b) => effectiveness(b, defender) - effectiveness(a, defender))
 }
 
 /**

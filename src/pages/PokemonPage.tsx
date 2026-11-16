@@ -7,13 +7,15 @@ import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
+import { useAuth } from '../auth/AuthContext'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
+import { HoloCard } from '../components/HoloCard'
 import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { allEntries, pokemonDetail } from '../lib/entries'
 import { formatDate, localDay, toApiDate, todayIso } from '../lib/format'
-import { KANTO_TOTAL, artworkUrl, dexNumber, displayName } from '../lib/pokemon'
+import { KANTO_TOTAL, dexNumber, displayName } from '../lib/pokemon'
 import './PokemonPage.css'
 
 const STAT_ES: Record<string, string> = {
@@ -31,6 +33,7 @@ export function PokemonPage() {
   const id = Number(useParams().id)
   const navigate = useNavigate()
   const toast = useToast()
+  const { user } = useAuth()
 
   const [detail, setDetail] = useState<PokemonDetail | null>(null)
   /** undefined = cargando; null = no está en tu Pokédex. */
@@ -87,9 +90,6 @@ export function PokemonPage() {
 
   const name = detail ? displayName(detail.name) : entry ? displayName(entry.pokemon_name) : dexNumber(id)
   const statTotal = detail ? Object.values(detail.stats).reduce((a, b) => a + b, 0) : 0
-  const art = shiny
-    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/${id}.png`
-    : artworkUrl(id)
 
   return (
     <div className="mon">
@@ -110,9 +110,13 @@ export function PokemonPage() {
       {!error && (
         <>
           <section className="card mon__head">
-            <div className={`mon__art ${entry?.is_captured ? 'is-captured' : ''}`}>
-              <img src={art} alt={`Ilustración de ${name}`} width={240} height={240} />
-            </div>
+            {detail ? (
+              <HoloCard
+                detail={detail} shiny={shiny} trainer={user?.username}
+                owned={entry === undefined || entry === null ? null : entry.is_captured ? 'captured' : 'seen'}
+                nickname={entry?.nickname} captureDate={entry?.capture_date}
+              />
+            ) : <div className="mon__card-skel" aria-busy="true" />}
             <div className="mon__info">
               <p className="faint num">{dexNumber(id)}{id <= KANTO_TOTAL && ' · Kanto'}</p>
               <h1 className="mon__name">{entry?.nickname ?? name}</h1>

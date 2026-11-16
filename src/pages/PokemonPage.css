@@ -3,14 +3,8 @@
 .mon__steps { display: flex; gap: 4px; }
 
 /* Cabecera: el propio Pokémon, grande. */
-.mon__head { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: center; }
-.mon__art {
-  aspect-ratio: 1; border-radius: 16px; background: var(--raised);
-  display: grid; place-items: center;
-}
-.mon__art.is-captured { background: color-mix(in srgb, var(--accent) 10%, var(--raised)); }
-.mon__art img { width: 88%; height: 88%; object-fit: contain; animation: art-in 420ms var(--ease-out); }
-@keyframes art-in { from { opacity: 0; transform: scale(0.94); } }
+.mon__head { display: grid; grid-template-columns: 340px 1fr; gap: 40px; align-items: center; padding: 32px; }
+.mon__card-skel { width: 300px; aspect-ratio: 63 / 88; border-radius: 14px; background: var(--raised); animation: pulse 1.4s ease-in-out infinite; justify-self: center; }
 .mon__info { display: grid; gap: 10px; justify-items: start; }
 .mon__name { font-size: 32px; line-height: 38px; font-weight: 600; letter-spacing: -0.02em; }
 .mon__status { display: flex; align-items: center; gap: 8px; color: var(--muted); }
@@ -50,9 +44,8 @@
 
 
 @media (max-width: 900px) {
-  .mon__head { grid-template-columns: 1fr; gap: 20px; }
-  .mon__art { max-width: 280px; width: 100%; justify-self: center; }
-  .mon__stats, .mon__facts, .mon__entry { grid-column: 1 / -1; }
+  .mon__head { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
+    .mon__stats, .mon__facts, .mon__entry { grid-column: 1 / -1; }
   .entry-form { grid-template-columns: 1fr; }
   .entry-form__notes { grid-row: auto; }
   .stat { grid-template-columns: 96px 36px 1fr; }
