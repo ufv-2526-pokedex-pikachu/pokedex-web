@@ -1,0 +1,11 @@
+/* El sprite y su accesorio comparten caja: el accesorio se coloca en % de esa caja. */
+.wear { position: relative; display: inline-grid; place-items: end center; line-height: 0; }
+.wear__item { position: absolute; pointer-events: none; animation: wear-in 400ms var(--ease-spring) both; }
+.wear__item svg { width: 100%; height: auto; display: block; }
+.wear__item--gorra { top: 2%; left: 50%; width: 46%; translate: -50% 0; }
+.wear__item--corona { top: 0; left: 50%; width: 40%; translate: -50% 0; }
+.wear__item--gafas { top: 30%; left: 50%; width: 44%; translate: -50% 0; }
+.wear__item--lazo { top: 8%; right: 14%; width: 26%; }
+.wear__item--bufanda { bottom: 26%; left: 50%; width: 56%; translate: -50% 0; }
+.wear__item--medalla { bottom: 18%; left: 56%; width: 18%; }
+@keyframes wear-in { from { opacity: 0; scale: 0.6; } }

@@ -9,6 +9,9 @@ import { useAuth } from '../auth/AuthContext'
 import { Wordmark } from './Mark'
 import { SkyScene, usePhase } from './SkyScene'
 import { CompanionDock } from './CompanionDock'
+import { AchievementWatcher } from './AchievementWatcher'
+import { Tour } from './Tour'
+import { tour } from '../lib/tour'
 import { setSound, sfx, soundOn } from '../lib/sfx'
 import './Shell.css'
 
@@ -19,6 +22,7 @@ export const NAV = [
   { to: '/capturar', label: 'Capturar', end: false },
   { to: '/equipos', label: 'Equipos', end: false },
   { to: '/batalla', label: 'Batalla', end: false },
+  { to: '/logros', label: 'Logros', end: false },
 ] as const
 
 export function Shell() {
@@ -60,6 +64,10 @@ export function Shell() {
           ))}
         </nav>
         <div className="topbar__user">
+          <button type="button" className="btn topbar__present" onClick={() => tour.start()} title="Recorrido automático por la web">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z" /></svg>
+            <span>Presentar</span>
+          </button>
           <button
             type="button" className="btn topbar__sound" onClick={toggleSound} aria-pressed={sound}
             aria-label={sound ? 'Silenciar los sonidos' : 'Activar los sonidos'} title={sound ? 'Sonido activado' : 'Sonido desactivado'}
@@ -87,6 +95,8 @@ export function Shell() {
         <Outlet />
       </main>
       <CompanionDock />
+      <AchievementWatcher />
+      <Tour />
     </div>
   )
 }

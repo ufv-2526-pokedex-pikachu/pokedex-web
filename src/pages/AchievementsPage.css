@@ -1,0 +1,44 @@
+.logros { display: grid; gap: 28px; }
+
+/* Armario: el compañero a la izquierda y los accesorios a la derecha. */
+.closet { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: center; }
+.closet__stage { position: relative; height: 260px; border-radius: 22px; background: #9fe0ff; border: var(--line) solid var(--ink); display: grid; place-items: end center; overflow: hidden; }
+.closet__grass { position: absolute; bottom: -30px; width: 130%; height: 90px; border-radius: 50%; background: #6cc65a; border-top: var(--line) solid var(--ink); }
+.closet__stage .wear { position: relative; bottom: 20px; }
+.closet__mon { height: 190px; width: auto; max-width: 240px; object-fit: contain; }
+.closet__body { display: grid; gap: 12px; }
+.closet__list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.closet__item {
+  width: 100%; height: 100%; display: grid; justify-items: center; gap: 4px; padding: 12px 10px;
+  border: 2.5px solid var(--ink); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-sm);
+  font-family: var(--display); font-weight: 600; font-size: 15px; cursor: pointer; text-align: center;
+  transition: transform 120ms var(--ease-out), background-color 120ms;
+}
+.closet__item:hover:not(:disabled) { transform: translateY(-2px); }
+.closet__item.is-on { background: var(--yellow); }
+.closet__item:disabled { cursor: not-allowed; background: var(--raised); box-shadow: none; }
+.closet__item:disabled .closet__art { filter: grayscale(1); opacity: 0.45; }
+.closet__art { width: 64px; height: 44px; display: grid; place-items: center; }
+.closet__art svg { max-width: 100%; max-height: 100%; }
+.closet__art--none { font-size: 26px; color: var(--faint); }
+.closet__lock { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; color: var(--muted); }
+
+/* Medallas */
+.medals { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+.medal { display: grid; grid-template-columns: 76px 1fr; gap: 16px; align-items: center; padding: 18px 20px; }
+.medal--skel { min-height: 140px; background: rgba(255, 255, 255, 0.6); animation: pulse 1.4s ease-in-out infinite; }
+.medal__art { width: 76px; height: 95px; }
+.medal.is-on .medal__art { animation: medal-in 700ms var(--ease-spring) both; }
+.medal__text { display: grid; gap: 6px; }
+.medal__title { font-family: var(--display); font-size: 21px; font-weight: 700; }
+.medal__bar { height: 14px; border-radius: 99px; background: var(--raised); border: 2px solid var(--ink); overflow: hidden; }
+.medal__bar span { display: block; height: 100%; background: var(--m); transition: width 700ms var(--ease-out); }
+.medal:not(.is-on) .medal__bar span { background: #a9b3c8; }
+.medal__count { font-family: var(--display); font-weight: 600; font-size: 15px; }
+.medal.is-on .medal__count { color: var(--accent-ink); }
+@keyframes medal-in { from { transform: scale(0.6) rotate(-12deg); opacity: 0; } }
+
+@media (max-width: 760px) {
+  .closet { grid-template-columns: 1fr; }
+  .closet__stage { height: 220px; }
+}

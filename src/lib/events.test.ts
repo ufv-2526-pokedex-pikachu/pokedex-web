@@ -13,6 +13,6 @@ describe('avisos entre pantallas', () => {
   })
 
   it('hay una frase del compañero para cada aviso', () => {
-    for (const e of ['capture', 'flee', 'win', 'lose'] as const) expect(REACTION[e].length).toBeGreaterThan(5)
+    for (const e of ['capture', 'flee', 'win', 'lose', 'achievement'] as const) expect(REACTION[e].length).toBeGreaterThan(5)
   })
 })

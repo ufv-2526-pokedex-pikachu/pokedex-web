@@ -13,6 +13,7 @@ import type { GameEvent } from '../lib/events'
 import { pickPartner, savedPartner } from '../lib/partner'
 import { displayName } from '../lib/pokemon'
 import { Sprite } from './Sprite'
+import { Wearable, useAccessory } from './Wearable'
 import './CompanionDock.css'
 
 const SLEEP_AFTER_MS = 45_000
@@ -25,6 +26,7 @@ export function CompanionDock() {
   const [line, setLine] = useState<string | null>(null)
   const timer = useRef(0)
   const sleepTimer = useRef(0)
+  const accessory = useAccessory()
 
   const refresh = useRef(() => {})
   refresh.current = () => {
@@ -36,7 +38,7 @@ export function CompanionDock() {
   // Reacciones a lo que pasa en el juego.
   useEffect(() => onGameEvent((e: GameEvent) => {
     clearTimeout(timer.current)
-    setMood(e === 'capture' || e === 'win' ? 'happy' : 'sad')
+    setMood(e === 'capture' || e === 'win' || e === 'achievement' ? 'happy' : 'sad')
     setLine(REACTION[e])
     if (e === 'capture') refresh.current()
     timer.current = window.setTimeout(() => { setMood('idle'); setLine(null) }, 3200)
@@ -72,7 +74,7 @@ export function CompanionDock() {
       {line && <p className="dock__bubble" role="status">{line}</p>}
       {mood === 'sleep' && <span className="dock__zzz" aria-hidden="true">Zzz</span>}
       <div className="dock__mon">
-        <Sprite id={partner.pokemon_id} alt={name} />
+        <Wearable accessory={accessory}><Sprite id={partner.pokemon_id} alt={name} /></Wearable>
       </div>
     </aside>
   )

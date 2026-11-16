@@ -15,6 +15,7 @@ import type { Action, BattleEvent, BattleState, Fighter } from '../lib/battle'
 import { buildFighter, mvp, newBattle, playTurn } from '../lib/battle'
 import { pokemonDetail } from '../lib/entries'
 import { habitatFor } from '../lib/habitat'
+import { readRecord, saveRecord } from '../lib/record'
 import { confetti } from '../lib/confetti'
 import { emit } from '../lib/events'
 import { sfx } from '../lib/sfx'
@@ -44,16 +45,6 @@ function randomKanto(n: number, exclude: number[]): number[] {
   const out: number[] = []
   while (out.length < n && pool.length) out.push(...pool.splice(Math.floor(Math.random() * pool.length), 1))
   return out
-}
-
-/* ---------- Récord local ---------- */
-
-function recordKey(user: string) { return `pokedex.record.${user}` }
-function readRecord(user: string): { won: number; lost: number } {
-  try { return JSON.parse(localStorage.getItem(recordKey(user)) ?? '') } catch { return { won: 0, lost: 0 } }
-}
-function saveRecord(user: string, r: { won: number; lost: number }) {
-  try { localStorage.setItem(recordKey(user), JSON.stringify(r)) } catch { /* sin almacenamiento */ }
 }
 
 export function BattlePage() {

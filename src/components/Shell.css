@@ -30,6 +30,8 @@
 }
 .topbar__menu { display: none; width: 44px; padding: 0; }
 .topbar__sound { width: 44px; padding: 0; }
+.topbar__present { padding: 0 14px; }
+@media (max-width: 1280px) { .topbar__present span { display: none; } .topbar__present { width: 44px; padding: 0; } }
 .topbar__sound[aria-pressed='true'] { background: #fff6cf; }
 
 .canvas { max-width: 1360px; margin: 0 auto; padding: 40px var(--gutter) 120px; min-width: 0; color: var(--on-sky); }

@@ -3,7 +3,7 @@
  * Quien juega los lanza (emit) y quien reacciona los escucha (onGameEvent): el compañero, el confeti, los sonidos.
  * Usa un EventTarget propio, no `window`, para poder probarlo sin navegador.
  */
-export type GameEvent = 'capture' | 'flee' | 'win' | 'lose'
+export type GameEvent = 'capture' | 'flee' | 'win' | 'lose' | 'achievement'
 
 const bus = new EventTarget()
 
@@ -24,4 +24,5 @@ export const REACTION: Record<GameEvent, string> = {
   flee: '¡Casi! A la próxima lo pillamos.',
   win: '¡Hemos ganado el combate!',
   lose: 'Uf… La próxima vez entrenamos más.',
+  achievement: '¡Medalla nueva! Mírala en Logros.',
 }

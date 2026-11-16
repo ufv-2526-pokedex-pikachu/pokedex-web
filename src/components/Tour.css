@@ -1,0 +1,26 @@
+/* Panel de la presentación: una pegatina grande abajo, por encima de todo. */
+.tour {
+  position: fixed; left: 50%; bottom: 22px; z-index: 60; width: min(760px, calc(100vw - 32px)); translate: -50% 0;
+  display: grid; gap: 10px; padding: 20px 22px 26px; overflow: hidden;
+  background: var(--surface); color: var(--ink); border: var(--line) solid var(--ink); border-radius: 28px; box-shadow: 0 8px 0 var(--ink);
+  animation: tour-in 400ms var(--ease-spring) both;
+}
+.tour__head { display: flex; align-items: center; gap: 12px; }
+.tour__count { padding: 3px 12px; border-radius: 999px; background: var(--red); color: #fff; font-family: var(--display); font-weight: 700; }
+.tour__title { font-family: var(--display); font-size: 28px; font-weight: 700; line-height: 1.1; }
+.tour__text { font-size: 17px; line-height: 1.45; }
+.tour__endpoints { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tour__endpoints code {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--ink); color: #fff;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 13px;
+}
+.tour__controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.tour__exit { margin-left: auto; }
+.tour__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; background: var(--raised); }
+.tour__bar span { display: block; height: 100%; background: var(--yellow); transform-origin: left; transform: scaleX(0); }
+@keyframes tour-in { from { opacity: 0; transform: translateY(20px); } }
+@media (max-width: 640px) {
+  .tour { bottom: 10px; padding: 16px 16px 22px; }
+  .tour__title { font-size: 22px; }
+  .tour__text { font-size: 15px; }
+}

@@ -5,9 +5,11 @@
 import type { PokedexEntry } from '../api/types'
 import { displayName } from '../lib/pokemon'
 import { Sprite } from './Sprite'
+import { Wearable, useAccessory } from './Wearable'
 import './Partner.css'
 
 export function Partner({ entry, line }: { entry: PokedexEntry | null; line: string }) {
+  const accessory = useAccessory()
   const id = entry?.pokemon_id ?? 25
   const name = entry ? entry.nickname ?? displayName(entry.pokemon_name) : 'Pikachu'
   return (
@@ -15,7 +17,7 @@ export function Partner({ entry, line }: { entry: PokedexEntry | null; line: str
       <p className="partner__bubble">{line}</p>
       <div className="partner__stage">
         <span className="partner__grass" aria-hidden="true" />
-        <Sprite id={id} alt={name} className="partner__sprite" />
+        <Wearable accessory={accessory}><Sprite id={id} alt={name} className="partner__sprite" /></Wearable>
       </div>
       <figcaption className="partner__name">{entry ? `Tu compañero · ${name}` : 'Te espera un compañero'}</figcaption>
     </figure>

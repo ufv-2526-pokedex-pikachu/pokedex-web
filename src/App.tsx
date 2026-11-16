@@ -11,6 +11,7 @@ import { TeamsPage } from './pages/TeamsPage'
 import { TeamEditorPage } from './pages/TeamEditorPage'
 import { BattlePage } from './pages/BattlePage'
 import { AlbumPage } from './pages/AlbumPage'
+import { AchievementsPage } from './pages/AchievementsPage'
 import { ToastProvider } from './components/Toast'
 
 /** Si no hay sesión, manda a /entrar y recuerda adónde querías ir. */
@@ -47,6 +48,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="equipos/nuevo" element={<TeamEditorPage />} />
       <Route path="equipos/:id" element={<TeamEditorPage />} />
       <Route path="batalla" element={<BattlePage />} />
+      <Route path="logros" element={<AchievementsPage />} />
     </Route>
     <Route path="*" element={<Navigate to="/" replace />} />
   </Route>,

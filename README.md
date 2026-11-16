@@ -74,7 +74,12 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 | Equipos (lista, crear, editar, ordenar, PDF) | `GET /teams`, `POST /teams`, `PUT /teams/{id}`, `GET /teams/{id}/export`; `GET /pokemon/{id}` para las stats del resumen |
 | Batalla por turnos | `GET /teams`, `GET /pokemon/{id}` (stats y sprites de los dos equipos). El combate lo calcula la web (`src/lib/battle.ts`) |
 | Álbum (cartas holográficas de la colección) | `GET /pokedex` (paginado de 100 en 100); las ilustraciones van por URL, sin gastar peticiones |
+| Logros y armario del compañero | `GET /pokedex`, `GET /teams`, `GET /pokedex/stats` (las medallas se calculan con tus datos; el récord de batallas y el accesorio elegido se guardan en el navegador) |
 | Ficha de un Pokémon (carta holográfica, grito con su onda, evolución) | `GET /api/v2/pokedex` (cadena evolutiva), `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
+
+## Modo presentación
+
+El botón «Presentar» de la barra superior hace un recorrido automático por todas las pantallas: abre cada una, la recorre despacio y explica qué hace y qué endpoints de la API usa. Teclado: → siguiente, ← anterior, espacio pausa, Esc sale.
 
 ## Notas sobre la API
 
