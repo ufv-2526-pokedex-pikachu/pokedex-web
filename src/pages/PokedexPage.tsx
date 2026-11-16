@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import type { PokedexEntry, PokedexQuery, PokedexStats } from '../api/types'
+import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { dexNumber, displayName, splitTypes } from '../lib/pokemon'
@@ -197,9 +198,7 @@ export function PokedexPage() {
                 aria-pressed={e.favorite}
                 aria-label={`${e.favorite ? 'Quitar de' : 'Añadir a'} favoritos: ${displayName(e.pokemon_name)}`}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" />
-                </svg>
+                <Icon name="star" size={18} filled={e.favorite} />
               </button>
             </span>
           </div>

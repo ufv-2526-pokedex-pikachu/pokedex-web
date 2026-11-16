@@ -34,9 +34,11 @@
 .check--small { height: auto; font-size: 13px; color: var(--muted); gap: 8px; }
 .check--small input { width: 16px; height: 16px; }
 
-.pool { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; max-height: 470px; overflow-y: auto; }
+/* Filas de 132 px y como mucho 4 visibles: el corte siempre cae entre filas, nunca a mitad de una. */
+.pool { list-style: none; margin: 0; padding: 0 4px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); grid-auto-rows: 132px; gap: 8px; max-height: calc(4 * 132px + 3 * 8px); overflow-y: auto; }
+.pool li { min-height: 0; }
 .pool__item {
-  width: 100%; display: grid; justify-items: center; gap: 2px; padding: 8px 4px 10px;
+  width: 100%; height: 100%; align-content: center; grid-auto-rows: max-content; display: grid; justify-items: center; gap: 2px; padding: 8px 4px 10px;
   border: 0; border-radius: 14px; background: var(--raised); cursor: pointer;
   transition: background-color 120ms, transform 160ms var(--ease-out);
 }
@@ -51,7 +53,6 @@
 
 .summary { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 28px; }
 .summary__block { display: grid; gap: 10px; align-content: start; }
-.summary__label { font-size: var(--fs-small); color: var(--muted); }
 .weak { display: inline-flex; align-items: center; gap: 4px; }
 .stats--compact { gap: 8px; }
 .stats--compact .stat { grid-template-columns: 96px 36px 1fr; }

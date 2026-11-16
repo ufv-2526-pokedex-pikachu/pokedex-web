@@ -67,6 +67,7 @@ a { color: inherit; }
 
 /* ---------- Controles ---------- */
 
+.icon { flex: none; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   height: var(--control-height); padding: 0 18px;
@@ -143,6 +144,7 @@ a { color: inherit; }
 @media (max-width: 760px) { .title-row { align-items: flex-start; } }
 
 /* Piezas compartidas por varias pantallas */
+.summary__label { font-size: var(--fs-small); color: var(--muted); }
 .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .stats { margin: 0; display: grid; gap: 14px; }
 .stat { display: grid; grid-template-columns: 110px 40px 1fr; align-items: center; gap: 12px; }

@@ -15,7 +15,7 @@ import {
   BALLS_PER_ENCOUNTER, catchChance, ringAt, ringPeriod, shakes, throwQuality,
 } from '../lib/capture'
 import { allEntries, pokemonDetail } from '../lib/entries'
-import { KANTO_TOTAL, artworkUrl, dexNumber, displayName } from '../lib/pokemon'
+import { KANTO_TOTAL, artworkUrl, dexNumber, displayName, spriteUrl } from '../lib/pokemon'
 import './CapturePage.css'
 
 type Phase = 'aiming' | 'throwing' | 'shaking' | 'escaped' | 'caught' | 'fled'
@@ -118,6 +118,14 @@ export function CapturePage() {
 
   const owned = encounter ? entries.get(encounter.detail.id) : undefined
 
+  // Ocho de Kanto que aún no tienes, elegidos una vez al cargar (sin peticiones: los sprites van por URL).
+  const [seed] = useState(() => Math.random())
+  const suggestions = useMemo(() => {
+    const pending = Array.from({ length: KANTO_TOTAL }, (_, i) => i + 1).filter((id) => !entries.has(id))
+    const start = Math.floor(seed * pending.length)
+    return [...pending.slice(start), ...pending.slice(0, start)].slice(0, 8)
+  }, [entries, seed])
+
   return (
     <div className="capture">
       <div className="title-row">
@@ -171,6 +179,22 @@ export function CapturePage() {
               <li className="finder__empty muted">Escribe al menos 2 letras para buscar entre todos los Pokémon.</li>
             )}
           </ul>
+
+          {results === null && suggestions.length > 0 && (
+            <div className="suggest">
+              <p className="summary__label">Aún no los tienes</p>
+              <ul className="suggest__grid">
+                {suggestions.map((id) => (
+                  <li key={id}>
+                    <button type="button" className="suggest__item" onClick={() => start(id)} disabled={loadingId !== null} aria-label={`Buscar al Pokémon ${dexNumber(id)}`}>
+                      {loadingId === id ? <span className="spinner" aria-hidden="true" /> : <img src={spriteUrl(id)} alt="" width={64} height={64} loading="lazy" />}
+                      <span className="faint num">{dexNumber(id)}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
 
         <section ref={arenaRef} className="card arena" aria-label="Encuentro">

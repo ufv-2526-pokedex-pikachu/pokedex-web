@@ -21,6 +21,19 @@
 .finder__state { font-size: var(--fs-small); color: var(--faint); text-align: right; justify-self: end; }
 .finder__state.is-captured { color: var(--accent); }
 
+/* Sugerencias: sprites de Kanto que aún no tienes, en 4 columnas. */
+.suggest { display: grid; gap: 10px; margin-top: 4px; }
+.suggest__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.suggest__item {
+  width: 100%; aspect-ratio: 1; display: grid; place-items: center; align-content: center; gap: 0;
+  border: 0; border-radius: 14px; background: var(--raised); cursor: pointer;
+  transition: background-color 120ms, transform 160ms var(--ease-out);
+}
+.suggest__item:hover:not(:disabled) { background: var(--raised-2); }
+.suggest__item:active:not(:disabled) { transform: scale(0.96); }
+.suggest__item img { width: 64px; height: 64px; image-rendering: pixelated; }
+.suggest__item .num { font-size: 11px; margin-top: -6px; }
+
 /* ---------- Escenario ---------- */
 .arena { min-height: 560px; display: grid; }
 .arena__empty { display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; }
@@ -65,7 +78,7 @@
   animation: none; transform: scale(0.05) translateY(1400px); opacity: 0; filter: brightness(3);
 }
 .is-escaped .arena__mon { animation: pop-out 420ms var(--ease-out); }
-.is-fled .arena__mon { transform: translateX(160%); opacity: 0; transition: transform 600ms ease-in, opacity 600ms; }
+.is-fled .arena__mon { transform: translateX(160%); opacity: 0; transition: transform 600ms var(--ease-out), opacity 600ms; }
 
 .arena__stars { position: absolute; left: 50%; top: calc(50% + 70px); }
 .arena__stars i {

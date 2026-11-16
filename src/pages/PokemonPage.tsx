@@ -8,6 +8,7 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
+import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { allEntries, pokemonDetail } from '../lib/entries'
@@ -93,13 +94,13 @@ export function PokemonPage() {
   return (
     <div className="mon">
       <nav className="mon__nav" aria-label="Pokémon anterior y siguiente">
-        <Link to="/pokedex" className="btn btn-ghost">← Mi Pokédex</Link>
+        <Link to="/pokedex" className="btn btn-ghost"><Icon name="back" />Mi Pokédex</Link>
         <span className="mon__steps">
           <button type="button" className="btn btn-ghost num" disabled={id <= 1} onClick={() => navigate(`/pokemon/${id - 1}`)}>
-            ‹ {id > 1 ? dexNumber(id - 1) : ''}
+            <Icon name="prev" />{id > 1 ? dexNumber(id - 1) : ''}
           </button>
           <button type="button" className="btn btn-ghost num" disabled={id >= LAST_ID} onClick={() => navigate(`/pokemon/${id + 1}`)}>
-            {id < LAST_ID ? dexNumber(id + 1) : ''} ›
+            {id < LAST_ID ? dexNumber(id + 1) : ''}<Icon name="next" />
           </button>
         </span>
       </nav>
@@ -133,7 +134,7 @@ export function PokemonPage() {
                 )}
                 {entry && (
                   <button type="button" className={`btn ${entry.favorite ? 'is-fav' : ''}`} aria-pressed={entry.favorite} onClick={toggleFavorite}>
-                    {entry.favorite ? '★ Favorito' : '☆ Favorito'}
+                    <Icon name="star" filled={entry.favorite} />Favorito
                   </button>
                 )}
                 <CryButton id={id} />

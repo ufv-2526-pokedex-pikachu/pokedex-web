@@ -8,6 +8,7 @@ import type { DragEvent, FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import type { PokedexEntry, PokemonDetail } from '../api/types'
+import { Icon } from '../components/Icon'
 import { TypePill, TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { allEntries, pokemonDetail } from '../lib/entries'
@@ -113,7 +114,7 @@ export function TeamEditorPage() {
     <form className="editor" onSubmit={save}>
       <div className="title-row">
         <div>
-          <Link to="/equipos" className="btn btn-ghost editor__back">← Equipos</Link>
+          <Link to="/equipos" className="btn btn-ghost editor__back"><Icon name="back" />Equipos</Link>
           <h1 className="page-title">{teamId ? 'Editar equipo' : 'Nuevo equipo'}</h1>
         </div>
         <div className="title-row__actions">
@@ -157,9 +158,9 @@ export function TeamEditorPage() {
                     <TypePills types={splitTypes(m.pokemon_types)} />
                   </span>
                   <span className="member__tools">
-                    <button type="button" className="icon-btn" disabled={i === 0} onClick={() => setIds(move(ids, i, i - 1))} aria-label={`Subir a ${displayName(m.pokemon_name)}`}>↑</button>
-                    <button type="button" className="icon-btn" disabled={i === members.length - 1} onClick={() => setIds(move(ids, i, i + 1))} aria-label={`Bajar a ${displayName(m.pokemon_name)}`}>↓</button>
-                    <button type="button" className="icon-btn" onClick={() => remove(m.pokemon_id)} aria-label={`Quitar a ${displayName(m.pokemon_name)}`}>✕</button>
+                    <button type="button" className="icon-btn" disabled={i === 0} onClick={() => setIds(move(ids, i, i - 1))} aria-label={`Subir a ${displayName(m.pokemon_name)}`}><Icon name="up" /></button>
+                    <button type="button" className="icon-btn" disabled={i === members.length - 1} onClick={() => setIds(move(ids, i, i + 1))} aria-label={`Bajar a ${displayName(m.pokemon_name)}`}><Icon name="down" /></button>
+                    <button type="button" className="icon-btn" onClick={() => remove(m.pokemon_id)} aria-label={`Quitar a ${displayName(m.pokemon_name)}`}><Icon name="close" /></button>
                   </span>
                 </li>
               )

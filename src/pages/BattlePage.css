@@ -37,7 +37,7 @@
 .arena-field__mon--me.is-attacking img { animation: lunge-up 420ms var(--ease-out); }
 .arena-field__mon--foe.is-attacking img { animation: lunge-down 420ms var(--ease-out); }
 .arena-field__mon.is-hit img { animation: hit 480ms steps(2, jump-none) ; }
-.arena-field__mon.is-fainted img { transform: translateY(60px); opacity: 0; transition: transform 500ms ease-in, opacity 500ms; }
+.arena-field__mon.is-fainted img { transform: translateY(60px); opacity: 0; transition: transform 500ms var(--ease-out), opacity 500ms; }
 
 @keyframes enter { from { transform: translateX(var(--from, 0)) scale(0.6); opacity: 0; } }
 @keyframes lunge-up { 40% { transform: translate(28px, -22px); } }

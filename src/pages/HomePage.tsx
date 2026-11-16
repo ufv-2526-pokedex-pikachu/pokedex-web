@@ -62,7 +62,7 @@ export function HomePage() {
         <Figure label="En tu Pokédex" value={stats ? `${stats.total_pokemon}` : null} />
         <Figure label="Capturados" value={stats ? `${stats.captured}` : null} />
         <Figure
-          label="Capturados de tu Pokédex"
+          label="Capturado"
           value={stats ? stats.completion_percentage.toLocaleString('es-ES', { minimumFractionDigits: 1 }) : null}
           unit="%"
         />

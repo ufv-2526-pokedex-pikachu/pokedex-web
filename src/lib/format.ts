@@ -8,6 +8,7 @@ export function formatDate(value: string): string {
 /** Día local "2026-11-16" de un instante (por defecto, ahora). La API guarda en UTC. */
 export function localDay(value: string | Date = new Date()): string {
   const d = typeof value === 'string' ? new Date(value) : value
+  // taste-skill-ignore: es una fecha, no una numeración
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 

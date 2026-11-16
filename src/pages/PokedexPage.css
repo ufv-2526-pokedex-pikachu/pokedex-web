@@ -41,11 +41,9 @@
   border: 0; background: transparent; cursor: pointer; color: #6b6b6b;
   transition: color 120ms, background-color 120ms, transform 160ms var(--ease-out);
 }
-.star svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
 .star:hover { color: var(--text); background: var(--raised); }
 .star:active { transform: scale(0.88); }
 .star.is-on { color: var(--accent); }
-.star.is-on svg { fill: currentColor; }
 
 .dex-row--skeleton span { grid-column: 1 / -1; height: 56px; border-radius: 12px; background: var(--surface); animation: pulse 1.4s ease-in-out infinite; }
 
