@@ -1,0 +1,69 @@
+.editor { display: grid; gap: 22px; max-width: 1320px; }
+.editor__back { margin: -8px 0 6px -10px; }
+
+/* Equipo y Pokédex lado a lado; el resumen debajo, a lo ancho. */
+.editor__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); align-items: start; }
+.editor__team, .editor__pool { display: grid; gap: 16px; }
+.editor__summary { grid-column: 1 / -1; display: grid; gap: 16px; }
+.editor__fields { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; }
+
+.members { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.member {
+  display: grid; grid-template-columns: 16px 56px 1fr auto; align-items: center; gap: 12px;
+  min-height: 72px; padding: 6px 10px; border-radius: 14px; background: var(--raised);
+  cursor: grab; transition: opacity 120ms, background-color 120ms;
+}
+.member.is-dragging { opacity: 0.4; }
+.member img { image-rendering: pixelated; }
+.member__grip { color: #5e5e5e; letter-spacing: -3px; user-select: none; }
+.member__text { display: grid; gap: 4px; min-width: 0; }
+.member__name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.member__tools { display: flex; gap: 2px; }
+.member--empty {
+  grid-template-columns: 1fr; place-items: center; background: transparent; border: 1.5px dashed #333;
+  color: var(--faint); cursor: default; font-size: 13px;
+}
+
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; color: var(--muted);
+  cursor: pointer; font-size: 14px; transition: background-color 120ms, color 120ms;
+}
+.icon-btn:hover:not(:disabled) { background: var(--raised-2); color: var(--text); }
+.icon-btn:disabled { opacity: 0.3; cursor: default; }
+
+.check--small { height: auto; font-size: 13px; color: var(--muted); gap: 8px; }
+.check--small input { width: 16px; height: 16px; }
+
+.pool { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; max-height: 470px; overflow-y: auto; }
+.pool__item {
+  width: 100%; display: grid; justify-items: center; gap: 2px; padding: 8px 4px 10px;
+  border: 0; border-radius: 14px; background: var(--raised); cursor: pointer;
+  transition: background-color 120ms, transform 160ms var(--ease-out);
+}
+.pool__item:hover:not(:disabled) { background: var(--raised-2); }
+.pool__item:active:not(:disabled) { transform: scale(0.96); }
+.pool__item:disabled { cursor: default; }
+.pool__item:disabled:not(.is-in) { opacity: 0.45; }
+.pool__item.is-in { background: color-mix(in srgb, var(--accent) 14%, var(--raised)); }
+.pool__item img { image-rendering: pixelated; }
+.pool__name { font-size: 13px; font-weight: 500; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pool__num { font-size: 11px; }
+
+.summary { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 28px; }
+.summary__block { display: grid; gap: 10px; align-content: start; }
+.summary__label { font-size: var(--fs-small); color: var(--muted); }
+.weak { display: inline-flex; align-items: center; gap: 4px; }
+.stats--compact { gap: 8px; }
+.stats--compact .stat { grid-template-columns: 96px 36px 1fr; }
+
+@media (max-width: 1000px) {
+  .editor__grid { grid-template-columns: 1fr; }
+  .summary { grid-template-columns: 1fr; gap: 18px; }
+}
+@media (max-width: 520px) {
+  .editor__fields { grid-template-columns: 1fr; }
+  .member { grid-template-columns: 48px 1fr auto; padding: 6px; gap: 8px; }
+  .member__grip { display: none; }
+  .member--empty { grid-template-columns: 1fr; }
+  .member img { width: 48px; height: 48px; }
+}

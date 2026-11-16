@@ -1,0 +1,25 @@
+.teams { display: grid; gap: 22px; max-width: 1320px; }
+.teams__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap); }
+
+.team-card { display: grid; grid-template-columns: minmax(200px, 1fr) auto auto; align-items: center; gap: 28px; }
+.team-card__info { display: grid; gap: 4px; min-width: 0; }
+.team-card__name { font-size: 18px; line-height: 24px; font-weight: 600; }
+.team-card__meta { font-size: var(--fs-small); }
+.team-card__actions { display: flex; gap: 8px; }
+
+.teams__empty { display: grid; justify-items: start; gap: 12px; }
+
+/* Seis huecos: el lleno es un paso de gris, el vacío un contorno discontinuo (hueco disponible). */
+.slots { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; }
+.slot { border-radius: 14px; background: var(--raised); display: grid; place-items: center; flex: none; }
+.slot img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.slot--empty { background: transparent; border: 1.5px dashed #3a3a3a; }
+
+@media (max-width: 960px) {
+  .team-card { grid-template-columns: 1fr; gap: 16px; }
+  .slots { flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .slots { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .slot { width: auto !important; height: auto !important; aspect-ratio: 1; }
+}
