@@ -1,0 +1,6 @@
+.cry { display: flex; align-items: center; gap: 12px; }
+.cry__wave { width: 220px; height: 36px; flex: none; }
+.cry__wave rect { fill: #4a4a4a; transition: fill 80ms; }
+.cry__wave rect.is-played { fill: var(--accent); }
+.cry__wave.is-loading rect { animation: pulse 1.4s ease-in-out infinite; }
+@media (max-width: 420px) { .cry__wave { width: 150px; } }

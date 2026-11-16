@@ -1,0 +1,27 @@
+.evo { display: grid; gap: 16px; }
+.evo__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.evo__step { display: flex; align-items: center; gap: 8px; }
+.evo__arrow { color: var(--faint); display: grid; }
+.evo__item {
+  display: grid; justify-items: center; gap: 2px; padding: 10px 16px 12px; min-width: 132px;
+  border-radius: 14px; background: var(--raised); text-decoration: none; color: inherit;
+  transition: background-color 120ms, transform 160ms var(--ease-out);
+}
+a.evo__item:hover { background: var(--raised-2); }
+a.evo__item:active { transform: scale(0.97); }
+.evo__item.is-current { background: color-mix(in srgb, var(--accent) 14%, var(--raised)); }
+.evo__sprite { width: 72px; height: 72px; display: grid; place-items: center; }
+.evo__sprite img { width: 72px; height: 72px; image-rendering: pixelated; }
+/* Igual que en el muro de Kanto: lo que no tienes se ve en silueta. */
+.evo__sprite.is-none img { filter: brightness(0) invert(0.32); }
+.evo__name { font-weight: 600; }
+.evo__meta { font-size: var(--fs-small); color: var(--faint); }
+
+@media (max-width: 560px) {
+  .evo__list { flex-direction: column; align-items: stretch; }
+  .evo__step { flex-direction: column; align-items: stretch; }
+  .evo__arrow { transform: rotate(90deg); justify-self: center; align-self: center; }
+  .evo__item { grid-template-columns: 56px 1fr; justify-items: start; align-items: center; column-gap: 12px; }
+  .evo__sprite { grid-row: span 2; width: 56px; height: 56px; }
+  .evo__sprite img { width: 56px; height: 56px; }
+}

@@ -18,6 +18,7 @@
 .mon__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
 .mon__stats { grid-column: span 4; display: grid; gap: 18px; align-content: start; }
 .mon__facts { grid-column: span 2; display: grid; gap: 18px; align-content: start; }
+.mon__evo { grid-column: span 6; display: grid; }
 .mon__entry { grid-column: span 6; display: grid; gap: 18px; }
 
 
@@ -45,7 +46,7 @@
 
 @media (max-width: 900px) {
   .mon__head { grid-template-columns: 1fr; gap: 24px; padding: 22px; }
-    .mon__stats, .mon__facts, .mon__entry { grid-column: 1 / -1; }
+    .mon__stats, .mon__facts, .mon__entry, .mon__evo { grid-column: 1 / -1; }
   .entry-form { grid-template-columns: 1fr; }
   .entry-form__notes { grid-row: auto; }
   .stat { grid-template-columns: 96px 36px 1fr; }

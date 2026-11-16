@@ -6,7 +6,7 @@ Hecha con React 19, TypeScript y Vite.
 
 ## Tests
 
-Las reglas del minijuego de captura (`src/lib/capture.ts`), la tabla de tipos (`src/lib/typechart.ts`) y el motor de combate (`src/lib/battle.ts`) tienen tests:
+Las reglas del minijuego de captura (`src/lib/capture.ts`), la tabla de tipos (`src/lib/typechart.ts`), el motor de combate (`src/lib/battle.ts`), la carta holográfica (`src/lib/holo.ts`) y la onda del grito (`src/lib/audio.ts`) tienen tests:
 
 ```bash
 npm test
@@ -74,7 +74,7 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 | Equipos (lista, crear, editar, ordenar, PDF) | `GET /teams`, `POST /teams`, `PUT /teams/{id}`, `GET /teams/{id}/export`; `GET /pokemon/{id}` para las stats del resumen |
 | Batalla por turnos | `GET /teams`, `GET /pokemon/{id}` (stats y sprites de los dos equipos). El combate lo calcula la web (`src/lib/battle.ts`) |
 | Álbum (cartas holográficas de la colección) | `GET /pokedex` (paginado de 100 en 100); las ilustraciones van por URL, sin gastar peticiones |
-| Ficha de un Pokémon (con su carta holográfica) | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
+| Ficha de un Pokémon (carta holográfica, grito con su onda, evolución) | `GET /api/v2/pokedex` (cadena evolutiva), `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
 
 ## Notas sobre la API
 

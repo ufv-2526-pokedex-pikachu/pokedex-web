@@ -3,12 +3,14 @@
  * si está en tu Pokédex, tu registro editable con PATCH /pokedex/{entry_id}.
  * Si no está, se puede añadir desde aquí con POST /pokedex.
  */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
+import { CryWave } from '../components/CryWave'
+import { EvolutionChain } from '../components/EvolutionChain'
 import { HoloCard } from '../components/HoloCard'
 import { CARD_TRANSITION } from '../components/useHoloTilt'
 import { Icon } from '../components/Icon'
@@ -26,10 +28,6 @@ const STAT_ES: Record<string, string> = {
 const STAT_MAX = 255
 const LAST_ID = 1025
 
-function cryUrl(id: number) {
-  return `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`
-}
-
 export function PokemonPage() {
   const id = Number(useParams().id)
   const navigate = useNavigate()
@@ -39,6 +37,7 @@ export function PokemonPage() {
   const [detail, setDetail] = useState<PokemonDetail | null>(null)
   /** undefined = cargando; null = no está en tu Pokédex. */
   const [entry, setEntry] = useState<PokedexEntry | null | undefined>(undefined)
+  const [entries, setEntries] = useState<PokedexEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [shiny, setShiny] = useState(false)
@@ -54,7 +53,7 @@ export function PokemonPage() {
       .then((d) => alive && setDetail(d))
       .catch((err) => alive && setError(err instanceof ApiError ? err.message : 'No se ha podido cargar el Pokémon.'))
     allEntries()
-      .then((list) => alive && setEntry(list.find((e) => e.pokemon_id === id) ?? null))
+      .then((list) => { if (alive) { setEntries(list); setEntry(list.find((e) => e.pokemon_id === id) ?? null) } })
       .catch(() => alive && setEntry(null))
     return () => { alive = false }
   }, [id])
@@ -64,6 +63,7 @@ export function PokemonPage() {
     try {
       const created = await api.addEntry({ pokemon_id: id, is_captured: captured })
       setEntry(created)
+      setEntries((l) => (l ? [...l, created] : l))
       toast(`${displayName(created.pokemon_name)} ${captured ? 'capturado' : 'añadido a tu Pokédex'}`)
     } catch (err) {
       toast(err instanceof ApiError ? err.message : 'No se ha podido añadir.', 'error')
@@ -142,7 +142,7 @@ export function PokemonPage() {
                     <Icon name="star" filled={entry.favorite} />Favorito
                   </button>
                 )}
-                <CryButton id={id} />
+                <CryWave id={id} name={name} />
                 <button type="button" className="btn" onClick={downloadCard}>Carta en PDF</button>
               </div>
             </div>
@@ -185,38 +185,13 @@ export function PokemonPage() {
               </div>
             </section>
 
-            {entry && <EntryForm entry={entry} onSaved={setEntry} onDeleted={() => setEntry(null)} />}
+            <div className="mon__evo"><EvolutionChain id={id} entries={entries} /></div>
+
+            {entry && <EntryForm entry={entry} onSaved={setEntry} onDeleted={() => { setEntry(null); setEntries((l) => l?.filter((e) => e.pokemon_id !== id) ?? l) }} />}
           </div>
         </>
       )}
     </div>
-  )
-}
-
-function CryButton({ id }: { id: number }) {
-  const audio = useRef<HTMLAudioElement | null>(null)
-  const [playing, setPlaying] = useState(false)
-  useEffect(() => () => audio.current?.pause(), [id])
-
-  function play() {
-    audio.current?.pause()
-    const a = new Audio(cryUrl(id))
-    a.volume = 0.4
-    a.onended = () => setPlaying(false)
-    a.onerror = () => setPlaying(false)
-    audio.current = a
-    setPlaying(true)
-    a.play().catch(() => setPlaying(false))
-  }
-
-  return (
-    <button type="button" className="btn" onClick={play} aria-label="Escuchar su grito">
-      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor" />
-        <path d={playing ? 'M11 5.5c1 .7 1 4.3 0 5M12.8 3.8c2 1.6 2 6.8 0 8.4' : 'M11 5.5c1 .7 1 4.3 0 5'} stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-      </svg>
-      Grito
-    </button>
   )
 }
 
