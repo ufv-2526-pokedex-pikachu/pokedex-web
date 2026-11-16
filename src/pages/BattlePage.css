@@ -19,25 +19,25 @@
 .fight__arena { display: grid; gap: 14px; padding: 14px; }
 
 /* El campo: rival arriba a la derecha, tú abajo a la izquierda, como en los juegos. */
-.field {
+.arena-field {
   position: relative; height: 400px; border-radius: 14px; overflow: hidden;
   background: var(--raised);
   display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
 }
-.field__foe-box { grid-column: 1; grid-row: 1; align-self: start; margin: 18px; }
-.field__me-box { grid-column: 2; grid-row: 2; align-self: end; justify-self: end; margin: 18px; }
-.field__mon { position: relative; display: grid; place-items: end center; }
-.field__mon--foe { grid-column: 2; grid-row: 1; padding-bottom: 6px; }
-.field__mon--me { grid-column: 1; grid-row: 2; padding-bottom: 0; }
-.field__mon img { position: relative; width: 192px; height: 192px; image-rendering: pixelated; animation: enter 420ms var(--ease-out); }
-.field__mon--me img { width: 224px; height: 224px; margin-bottom: -36px; }
-.field__pad { position: absolute; bottom: 10px; width: 190px; height: 34px; border-radius: 50%; background: #0f0f0f; }
-.field__mon--me .field__pad { bottom: -6px; width: 220px; }
+.arena-field__foe-box { grid-column: 1; grid-row: 1; align-self: start; margin: 18px; }
+.arena-field__me-box { grid-column: 2; grid-row: 2; align-self: end; justify-self: end; margin: 18px; }
+.arena-field__mon { position: relative; display: grid; place-items: end center; }
+.arena-field__mon--foe { grid-column: 2; grid-row: 1; padding-bottom: 6px; }
+.arena-field__mon--me { grid-column: 1; grid-row: 2; padding-bottom: 0; }
+.arena-field__mon img { position: relative; width: 192px; height: 192px; image-rendering: pixelated; animation: enter 420ms var(--ease-out); }
+.arena-field__mon--me img { width: 224px; height: 224px; margin-bottom: -36px; }
+.arena-field__pad { position: absolute; bottom: 10px; width: 190px; height: 34px; border-radius: 50%; background: #0f0f0f; }
+.arena-field__mon--me .arena-field__pad { bottom: -6px; width: 220px; }
 
-.field__mon--me.is-attacking img { animation: lunge-up 420ms var(--ease-out); }
-.field__mon--foe.is-attacking img { animation: lunge-down 420ms var(--ease-out); }
-.field__mon.is-hit img { animation: hit 480ms steps(2, jump-none) ; }
-.field__mon.is-fainted img { transform: translateY(60px); opacity: 0; transition: transform 500ms ease-in, opacity 500ms; }
+.arena-field__mon--me.is-attacking img { animation: lunge-up 420ms var(--ease-out); }
+.arena-field__mon--foe.is-attacking img { animation: lunge-down 420ms var(--ease-out); }
+.arena-field__mon.is-hit img { animation: hit 480ms steps(2, jump-none) ; }
+.arena-field__mon.is-fainted img { transform: translateY(60px); opacity: 0; transition: transform 500ms ease-in, opacity 500ms; }
 
 @keyframes enter { from { transform: translateX(var(--from, 0)) scale(0.6); opacity: 0; } }
 @keyframes lunge-up { 40% { transform: translate(28px, -22px); } }
@@ -104,12 +104,12 @@
   .setup, .fight { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
-  .field { height: 300px; }
-  .field__mon img { width: 120px; height: 120px; }
-  .field__mon--me img { width: 144px; height: 144px; margin-bottom: -22px; }
-  .field__pad { width: 120px; height: 24px; }
-  .field__mon--me .field__pad { width: 140px; }
-  .field__foe-box, .field__me-box { margin: 10px; }
+  .arena-field { height: 300px; }
+  .arena-field__mon img { width: 120px; height: 120px; }
+  .arena-field__mon--me img { width: 144px; height: 144px; margin-bottom: -22px; }
+  .arena-field__pad { width: 120px; height: 24px; }
+  .arena-field__mon--me .arena-field__pad { width: 140px; }
+  .arena-field__foe-box, .arena-field__me-box { margin: 10px; }
   .hpbox { padding: 8px 10px; gap: 6px; }
   .hpbox .types { display: none; }
   .moves { gap: 6px; }

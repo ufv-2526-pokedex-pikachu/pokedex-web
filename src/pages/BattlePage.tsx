@@ -269,17 +269,17 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
   return (
     <div className="fight">
       <section className="card fight__arena" aria-label="Combate">
-        <div className="field">
-          <HpBox fighter={foe} className="field__foe-box" />
-          <div className={`field__mon field__mon--foe ${anim.attacker === 'foe' ? 'is-attacking' : ''} ${anim.hit === 'foe' ? 'is-hit' : ''} ${foe.hp <= 0 ? 'is-fainted' : ''}`} key={`f-${foe.id}`}>
-            <span className="field__pad" aria-hidden="true" />
+        <div className="arena-field">
+          <HpBox fighter={foe} className="arena-field__foe-box" />
+          <div className={`arena-field__mon arena-field__mon--foe ${anim.attacker === 'foe' ? 'is-attacking' : ''} ${anim.hit === 'foe' ? 'is-hit' : ''} ${foe.hp <= 0 ? 'is-fainted' : ''}`} key={`f-${foe.id}`}>
+            <span className="arena-field__pad" aria-hidden="true" />
             {foe.front && <img src={foe.front} alt={foe.name} width={192} height={192} />}
           </div>
-          <div className={`field__mon field__mon--me ${anim.attacker === 'player' ? 'is-attacking' : ''} ${anim.hit === 'player' ? 'is-hit' : ''} ${me.hp <= 0 ? 'is-fainted' : ''}`} key={`m-${me.id}`}>
-            <span className="field__pad" aria-hidden="true" />
+          <div className={`arena-field__mon arena-field__mon--me ${anim.attacker === 'player' ? 'is-attacking' : ''} ${anim.hit === 'player' ? 'is-hit' : ''} ${me.hp <= 0 ? 'is-fainted' : ''}`} key={`m-${me.id}`}>
+            <span className="arena-field__pad" aria-hidden="true" />
             <img src={me.back ?? me.front ?? ''} alt={me.name} width={192} height={192} />
           </div>
-          <HpBox fighter={me} mine className="field__me-box" />
+          <HpBox fighter={me} mine className="arena-field__me-box" />
         </div>
         <p className="fight__message" role="status" aria-live="polite">{message}</p>
       </section>

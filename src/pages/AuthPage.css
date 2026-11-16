@@ -32,3 +32,9 @@
   .auth__wall { margin: 0 16px 16px; padding: 16px; max-height: 260px; }
   .auth__wall .kanto { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
 }
+
+/* Separador «o» entre el formulario y Google: dos tramos de línea a los lados de la letra. */
+.divider { display: flex; align-items: center; gap: 12px; color: var(--faint); font-size: var(--fs-small); margin: -4px 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+.google-btn { min-height: 44px; display: flex; justify-content: center; color-scheme: normal; }
+.google-btn.is-disabled { opacity: 0.5; pointer-events: none; }

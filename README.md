@@ -22,7 +22,35 @@ npm install
 npm run dev
 ```
 
-3. Abre http://localhost:5173.
+3. Abre http://localhost:5173 (con `localhost`, no con `127.0.0.1`: Google solo acepta los orígenes que tiene autorizados).
+
+### Login con Google (opcional)
+
+La API solo autentica con usuario y contraseña y no se modifica. Por eso hay un **puente** aparte, en `bridge/`:
+
+1. La web recibe de Google un *ID token* firmado al pulsar «Continuar con Google».
+2. El puente comprueba con las claves públicas de Google que el token es auténtico, que es para nuestra app y que el email está verificado.
+3. Calcula un usuario y una contraseña fijos para esa cuenta de Google. La contraseña es un HMAC con un secreto que solo tiene el puente.
+4. Hace login en la API con ellos; si la cuenta aún no existe, la registra primero.
+5. Devuelve a la web los JWT normales de la API.
+
+Para activarlo:
+
+1. Crea un ID de cliente OAuth en Google Cloud (Google Auth Platform → Clientes → Aplicación web) con los orígenes `http://localhost:5173` y `http://localhost`.
+2. Copia `.env.example` como `.env` en esta carpeta y pon el ID de cliente en `VITE_GOOGLE_CLIENT_ID`.
+3. Copia `bridge/.env.example` como `bridge/.env` y rellénalo (el ID de cliente y un `BRIDGE_SECRET` aleatorio).
+4. Arranca el puente:
+
+```bash
+cd bridge
+uv venv --python 3.12 .venv
+uv pip install --python .venv/Scripts/python.exe -r requirements.txt
+.venv/Scripts/python -m uvicorn app:app --port 8787
+```
+
+Tests del puente (Google y la API van simulados): `.venv/Scripts/python -m pytest -q`.
+
+Mientras la app de Google esté en modo «Prueba», solo pueden entrar los usuarios de prueba que añadas en Google Auth Platform → Público.
 
 Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por ejemplo: `$env:API_URL="http://127.0.0.1:9000"; npm run dev`.
 
@@ -54,3 +82,5 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
   - al elegir una fecha en la ficha, la envía con zona horaria (`toApiDate` en `src/lib/format.ts`).
 - **Equipos.** La API no tiene endpoint para borrar equipos, así que la web no lo ofrece. Tampoco deja borrar de la Pokédex un Pokémon que está en un equipo: responde 409 y la web muestra su mensaje.
 - **Batallas.** La API no guarda combates. El récord de victorias y derrotas se guarda solo en el navegador (`localStorage`).
+- **Registros con Google.** La API permite 5 registros por hora desde la misma IP, y todos los registros con Google salen del puente. Por eso, como mucho 5 personas nuevas por hora pueden entrar con Google por primera vez; las que ya entraron antes solo hacen login.
+- **Email repetido.** Si el email de la cuenta de Google ya tiene una cuenta creada con usuario y contraseña, el puente responde 409 y la web pide entrar con la contraseña.

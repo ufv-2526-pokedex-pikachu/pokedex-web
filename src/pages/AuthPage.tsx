@@ -7,6 +7,7 @@ import type { FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
+import { GoogleButton, googleEnabled } from '../components/GoogleButton'
 import { KantoWall } from '../components/KantoWall'
 import { Wordmark } from '../components/Mark'
 import './AuthPage.css'
@@ -23,7 +24,7 @@ function passwordProblem(p: string): string | null {
 }
 
 export function AuthPage() {
-  const { user, login, register } = useAuth()
+  const { user, login, register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [mode, setMode] = useState<Mode>('login')
@@ -52,6 +53,19 @@ export function AuthPage() {
     } catch (err) {
       const msg = err instanceof ApiError ? err.message : 'Algo ha fallado. Prueba otra vez.'
       setError(err instanceof ApiError && err.status === 401 ? 'Usuario o contraseña incorrectos.' : msg)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function onGoogle(credential: string) {
+    setError(null)
+    setBusy(true)
+    try {
+      await loginWithGoogle(credential)
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'No se ha podido entrar con Google.')
     } finally {
       setBusy(false)
     }
@@ -125,6 +139,13 @@ export function AuthPage() {
               {mode === 'login' ? 'Entrar' : 'Crear cuenta y entrar'}
             </button>
           </form>
+
+          {googleEnabled && (
+            <>
+              <p className="divider"><span>o</span></p>
+              <GoogleButton onCredential={onGoogle} disabled={busy} />
+            </>
+          )}
         </div>
 
         <p className="faint auth__foot">

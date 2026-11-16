@@ -67,6 +67,7 @@ async function errorFrom(res: Response): Promise<ApiError> {
     return new ApiError(res.status, msgs.join(' · '))
   }
   if (res.status === 429) return new ApiError(429, 'Demasiadas peticiones seguidas. Espera un minuto y vuelve a probar.')
+  if (res.status === 502 || res.status === 504) return new ApiError(res.status, 'No hay respuesta del servidor. ¿Están arrancados la API y el puente?')
   if (res.status >= 500) return new ApiError(res.status, 'La API ha fallado. Prueba otra vez en unos segundos.')
   return new ApiError(res.status, `Error ${res.status}`)
 }
@@ -121,7 +122,9 @@ async function send(path: string, opts: Options, retried = false): Promise<Respo
   try {
     res = await fetch(url, { method: opts.method ?? 'GET', headers, body })
   } catch {
-    throw new ApiError(0, 'No se puede conectar con la API. ¿Está arrancada en el puerto 8000?')
+    throw new ApiError(0, path.startsWith('/bridge')
+      ? 'No se puede conectar con el puente de Google. ¿Está arrancado en el puerto 8787?'
+      : 'No se puede conectar con la API. ¿Está arrancada en el puerto 8000?')
   }
 
   if (res.status === 401 && opts.auth !== false) {
@@ -166,6 +169,12 @@ export const api = {
     return t
   },
   me: () => json<User>(`${V1}/auth/me`),
+  /** Login con Google: el puente comprueba el token de Google y devuelve los JWT normales de la API. */
+  googleLogin: async (credential: string) => {
+    const t = await json<Token>('/bridge/google', { method: 'POST', json: { credential }, auth: false })
+    tokens.save(t)
+    return t
+  },
 
   searchPokemon: (name: string, limit = 20, offset = 0) =>
     json<PokemonSearchResult>(`${V1}/pokemon/search`, { query: { name, limit, offset } }),
