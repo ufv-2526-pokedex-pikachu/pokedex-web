@@ -10,6 +10,7 @@ import { api, ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
 import { HoloCard } from '../components/HoloCard'
+import { CARD_TRANSITION } from '../components/useHoloTilt'
 import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
@@ -116,7 +117,7 @@ export function PokemonPage() {
                 owned={entry === undefined || entry === null ? null : entry.is_captured ? 'captured' : 'seen'}
                 nickname={entry?.nickname} captureDate={entry?.capture_date}
               />
-            ) : <div className="mon__card-skel" aria-busy="true" />}
+            ) : <div className="mon__card-skel" aria-busy="true" style={{ viewTransitionName: CARD_TRANSITION }} />}
             <div className="mon__info">
               <p className="faint num">{dexNumber(id)}{id <= KANTO_TOTAL && ' · Kanto'}</p>
               <h1 className="mon__name">{entry?.nickname ?? name}</h1>

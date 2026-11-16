@@ -1,0 +1,28 @@
+.album { display: grid; gap: 20px; max-width: 1320px; }
+
+/* Progreso de Kanto: una barra fina con el amarillo de «tuyo». */
+.album__progress { height: 6px; border-radius: 99px; background: var(--raised); overflow: hidden; margin-top: -6px; }
+.album__progress span { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform 800ms var(--ease-out); }
+
+/* Archivador: columnas de cartas; cada casilla es un contenedor para que la carta escale con ella. */
+.album__grid {
+  list-style: none; margin: 0; padding: 4px 0 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px 14px;
+}
+.album__slot { container-type: inline-size; }
+.album__link { display: block; border-radius: 10px; text-decoration: none; color: inherit; }
+.album__link:focus-visible { outline-offset: 4px; }
+.album__link:hover .card-back__face { background: #181818; }
+.album__skel { display: block; aspect-ratio: 63 / 88; border-radius: 10px; background: var(--surface); animation: pulse 1.4s ease-in-out infinite; }
+.album__empty { padding: 24px 0; }
+
+/* La carta que vuela del álbum a la ficha: más lenta y con frenada suave que el fundido del resto. */
+::view-transition-group(holo-card) { animation-duration: 480ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); z-index: 10; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 220ms; }
+
+@media (max-width: 560px) {
+  .album__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

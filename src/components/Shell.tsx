@@ -11,6 +11,7 @@ import './Shell.css'
 export const NAV = [
   { to: '/', label: 'Inicio', end: true },
   { to: '/pokedex', label: 'Mi Pokédex', end: false },
+  { to: '/album', label: 'Álbum', end: false },
   { to: '/capturar', label: 'Capturar', end: false },
   { to: '/equipos', label: 'Equipos', end: false },
   { to: '/batalla', label: 'Batalla', end: false },

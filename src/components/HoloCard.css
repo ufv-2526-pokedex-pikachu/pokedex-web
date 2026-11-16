@@ -163,3 +163,40 @@
   .holo__rotator { transform: none; }
   .holo__window img { transform: none; }
 }
+
+/* ---------- Cartas pequeñas del álbum ---------- */
+/* El tamaño sale del ancho de su casilla (container query): todo escala con --w. */
+.holo--mini { --w: 100cqw; width: 100%; }
+.holo--mini .holo__face { grid-template-rows: auto 1fr auto; padding: 5% 6% 4%; }
+.holo--mini .holo__top { margin: 0; }
+.holo--mini .holo__name { font-size: calc(var(--w) * 0.085); }
+.holo__fav { color: var(--accent); display: grid; }
+.holo__fav svg { width: calc(var(--w) * 0.085); height: calc(var(--w) * 0.085); }
+.holo--mini .holo__window { margin-top: 5%; }
+.holo--mini .holo__window img { width: 92%; height: 92%; }
+.holo__mini-foot {
+  display: flex; justify-content: space-between; align-items: center; margin-top: 6%;
+  font-size: calc(var(--w) * 0.07); color: rgba(255, 255, 255, 0.78);
+}
+.holo__mini-dots { display: flex; gap: 4px; }
+.holo__mini-dots i { width: calc(var(--w) * 0.06); height: calc(var(--w) * 0.06); border-radius: 50%; }
+.holo--mini .holo__rotator::before { filter: blur(12px); opacity: calc(0.35 + var(--hyp) * 0.3); }
+/* En el álbum no se balancean solas: 151 cartas moviéndose a la vez marean. */
+.holo--mini.is-holo:not(.is-active) { animation: none; }
+/* Vistos sin capturar: en silueta, como en el muro de Kanto. */
+.is-silhouette .holo__window img { filter: brightness(0) invert(0.28); }
+
+/* Reverso: diseño propio, la Poké Ball de la marca sobre un fondo liso. */
+.card-back { --w: 100cqw; width: 100%; aspect-ratio: 63 / 88; border-radius: 4.5% / 3.2%; background: #232323; padding: 3.2%; }
+.card-back__face {
+  height: 100%; border-radius: 3.2% / 2.3%; background: #141414;
+  display: grid; place-items: center; align-content: center; gap: 6%;
+  outline: 1px solid #262626; outline-offset: -7%; /* taste-skill-ignore: filete impreso del reverso */
+}
+.card-back__ring {
+  width: calc(var(--w) * 0.42); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background: #1c1c1c; filter: grayscale(1); opacity: 0.55;
+}
+.card-back__ring svg { width: 70%; height: 70%; }
+.card-back__word { font-size: calc(var(--w) * 0.075); font-weight: 600; color: #4a4a4a; letter-spacing: 0.02em; }
+.card-back__num { font-size: calc(var(--w) * 0.07); color: #5e5e5e; }

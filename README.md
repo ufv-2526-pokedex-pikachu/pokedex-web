@@ -73,7 +73,8 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 | Capturar (buscador, hierba alta y minijuego) | `GET /pokemon/search`, `GET /pokemon/{id}`, `POST /pokedex`, `PATCH /pokedex/{id}` |
 | Equipos (lista, crear, editar, ordenar, PDF) | `GET /teams`, `POST /teams`, `PUT /teams/{id}`, `GET /teams/{id}/export`; `GET /pokemon/{id}` para las stats del resumen |
 | Batalla por turnos | `GET /teams`, `GET /pokemon/{id}` (stats y sprites de los dos equipos). El combate lo calcula la web (`src/lib/battle.ts`) |
-| Ficha de un Pokémon | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
+| Álbum (cartas holográficas de la colección) | `GET /pokedex` (paginado de 100 en 100); las ilustraciones van por URL, sin gastar peticiones |
+| Ficha de un Pokémon (con su carta holográfica) | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
 
 ## Notas sobre la API
 

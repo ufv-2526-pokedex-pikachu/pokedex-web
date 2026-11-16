@@ -6,16 +6,16 @@
  * La posición de la luz va en variables CSS que se escriben directamente en el elemento:
  * así React no vuelve a pintar la carta 60 veces por segundo.
  */
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { CSSProperties, PointerEvent } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import type { PokemonDetail } from '../api/types'
 import { buildFighter } from '../lib/battle'
 import { formatDate } from '../lib/format'
-import { REST, fromOrientation, fromPointer } from '../lib/holo'
-import type { Holo } from '../lib/holo'
+import { fromOrientation } from '../lib/holo'
 import { TYPE_COLOR, artworkUrl, dexNumber, displayName } from '../lib/pokemon'
 import { weaknesses } from '../lib/typechart'
 import { TypePill } from './TypePill'
+import { CARD_TRANSITION, applyHolo, useHoloTilt } from './useHoloTilt'
 import './HoloCard.css'
 
 interface Props {
@@ -34,9 +34,9 @@ const shinyArt = (id: number) =>
 type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () => Promise<'granted' | 'denied'> }
 
 export function HoloCard({ detail, owned, shiny = false, nickname, captureDate, trainer }: Props) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(false)
   const [gyro, setGyro] = useState(false)
+  // Con el giroscopio activo, el dedo no mueve la carta (lo hace el móvil al inclinarlo).
+  const { ref: cardRef, active, setActive, handlers } = useHoloTilt<HTMLDivElement>({ ignoreTouch: gyro })
   const name = displayName(detail.name)
 
   // A nivel 50, como en las batallas: sus PS y sus dos ataques más fuertes.
@@ -47,39 +47,17 @@ export function HoloCard({ detail, owned, shiny = false, nickname, captureDate, 
   const t1 = TYPE_COLOR[detail.types[0]] ?? '#888'
   const t2 = TYPE_COLOR[detail.types[1] ?? detail.types[0]] ?? t1
 
-  function apply(h: Holo) {
-    const el = cardRef.current
-    if (!el) return
-    el.style.setProperty('--rx', String(h.rx))
-    el.style.setProperty('--ry', String(h.ry))
-    el.style.setProperty('--px', String(h.px))
-    el.style.setProperty('--py', String(h.py))
-    el.style.setProperty('--hyp', String(h.hyp))
-  }
-
-  function onMove(e: PointerEvent<HTMLDivElement>) {
-    if (e.pointerType === 'touch' && gyro) return
-    const r = e.currentTarget.getBoundingClientRect()
-    setActive(true)
-    apply(fromPointer(e.clientX - r.left, e.clientY - r.top, r.width, r.height))
-  }
-
-  function onLeave() {
-    setActive(false)
-    apply(REST)
-  }
-
   // Giroscopio: en Android llega sin pedir permiso; en iPhone hay que pulsar el botón.
   useEffect(() => {
     if (!gyro) return
     const onTilt = (e: DeviceOrientationEvent) => {
       if (e.beta === null || e.gamma === null) return
       setActive(true)
-      apply(fromOrientation(e.beta, e.gamma))
+      applyHolo(cardRef.current, fromOrientation(e.beta, e.gamma))
     }
     window.addEventListener('deviceorientation', onTilt)
     return () => window.removeEventListener('deviceorientation', onTilt)
-  }, [gyro])
+  }, [gyro, cardRef, setActive])
 
   useEffect(() => {
     const coarse = window.matchMedia('(pointer: coarse)').matches
@@ -103,10 +81,8 @@ export function HoloCard({ detail, owned, shiny = false, nickname, captureDate, 
       <div
         ref={cardRef}
         className={`holo ${holo ? 'is-holo' : 'is-dull'} ${shiny ? 'is-shiny' : ''} ${active ? 'is-active' : ''}`}
-        style={{ '--t1': t1, '--t2': t2 } as CSSProperties}
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
-        onPointerCancel={onLeave}
+        style={{ '--t1': t1, '--t2': t2, viewTransitionName: CARD_TRANSITION } as CSSProperties}
+        {...handlers}
       >
         <article className="holo__rotator" aria-label={label}>
           <div className="holo__face">
