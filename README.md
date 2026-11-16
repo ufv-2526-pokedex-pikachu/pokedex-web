@@ -6,7 +6,7 @@ Hecha con React 19, TypeScript y Vite.
 
 ## Tests
 
-Las reglas del minijuego de captura (`src/lib/capture.ts`), la tabla de tipos (`src/lib/typechart.ts`), el motor de combate (`src/lib/battle.ts`), la carta holográfica (`src/lib/holo.ts`) y la onda del grito (`src/lib/audio.ts`) tienen tests:
+Las reglas del minijuego de captura (`src/lib/capture.ts`), la tabla de tipos (`src/lib/typechart.ts`), el motor de combate (`src/lib/battle.ts`), la carta holográfica (`src/lib/holo.ts`), la onda del grito (`src/lib/audio.ts`) y los hábitats (`src/lib/habitat.ts`) tienen tests:
 
 ```bash
 npm test

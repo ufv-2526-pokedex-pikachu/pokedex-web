@@ -49,7 +49,8 @@
   display: grid; place-items: center; min-height: 330px; border-radius: 16px;
   background: var(--raised); overflow: hidden;
 }
-.arena__target { position: relative; width: 240px; height: 240px; display: grid; place-items: center; }
+.arena__field { position: relative; }
+.arena__target { z-index: 1; position: relative; width: 240px; height: 240px; display: grid; place-items: center; }
 .arena__mon {
   position: relative; width: 220px; height: 220px; object-fit: contain;
   animation: idle-bob 2.2s ease-in-out infinite;

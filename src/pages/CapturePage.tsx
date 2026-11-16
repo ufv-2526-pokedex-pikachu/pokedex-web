@@ -15,6 +15,8 @@ import {
   BALLS_PER_ENCOUNTER, catchChance, ringAt, ringPeriod, shakes, throwQuality,
 } from '../lib/capture'
 import { allEntries, pokemonDetail } from '../lib/entries'
+import { HABITAT_ES, habitatFor } from '../lib/habitat'
+import { HabitatScene } from '../components/HabitatScene'
 import { KANTO_TOTAL, artworkUrl, dexNumber, displayName, spriteUrl } from '../lib/pokemon'
 import './CapturePage.css'
 
@@ -239,6 +241,7 @@ function Arena({ encounter, setEncounter, alreadyCaptured, onResult, onAgain }: 
   const scaleRef = useRef(1)
   const period = useMemo(() => ringPeriod(total), [total])
   const name = displayName(detail.name)
+  const habitat = habitatFor(detail.types)
 
   // El anillo se dibuja en cada fotograma; así sabemos su tamaño exacto al pulsar.
   useEffect(() => {
@@ -317,6 +320,7 @@ function Arena({ encounter, setEncounter, alreadyCaptured, onResult, onAgain }: 
       </div>
 
       <div className="arena__field">
+        <HabitatScene habitat={habitat} label={HABITAT_ES[habitat]} />
         <div className="arena__target">
           <span className="arena__shadow" aria-hidden="true" />
           <img className="arena__mon" src={artworkUrl(detail.id)} alt={name} width={240} height={240} />

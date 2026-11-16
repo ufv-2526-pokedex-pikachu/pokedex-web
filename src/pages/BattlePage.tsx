@@ -14,7 +14,9 @@ import { TypePill } from '../components/TypePill'
 import type { Action, BattleEvent, BattleState, Fighter } from '../lib/battle'
 import { buildFighter, mvp, newBattle, playTurn } from '../lib/battle'
 import { pokemonDetail } from '../lib/entries'
-import { KANTO_TOTAL, displayName, spriteUrl } from '../lib/pokemon'
+import { habitatFor } from '../lib/habitat'
+import { HabitatScene } from '../components/HabitatScene'
+import { KANTO_TOTAL, TYPE_COLOR, displayName, spriteUrl } from '../lib/pokemon'
 import { effectiveness } from '../lib/typechart'
 import './BattlePage.css'
 
@@ -209,7 +211,7 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
   const [shown, setShown] = useState(initial)
   const [message, setMessage] = useState(`¡${rivalName} quiere combatir!`)
   const [busy, setBusy] = useState(false)
-  const [anim, setAnim] = useState<{ attacker?: 'player' | 'foe'; hit?: 'player' | 'foe' }>({})
+  const [anim, setAnim] = useState<{ attacker?: 'player' | 'foe'; hit?: 'player' | 'foe'; fx?: HitFx }>({})
   const [log, setLog] = useState<string[]>([])
   const alive = useRef(true)
   // En desarrollo React monta dos veces (StrictMode): hay que volver a poner true al montar.
@@ -240,7 +242,7 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
         const target = ev.side === 'player' ? 'foe' : 'player'
         view = patchHp(view, target, ev.targetHp)
         setShown(view)
-        setAnim({ hit: ev.damage > 0 ? target : undefined })
+        setAnim({ hit: ev.damage > 0 ? target : undefined, fx: { side: target, color: TYPE_COLOR[ev.move.type] ?? '#fff', damage: ev.damage, crit: ev.crit, eff: ev.eff, key: Date.now() } })
         if (text[1]) { await wait(350); setMessage(`${text[0]} ${text[1]}`) }
         await wait(STEP_MS - 450)
         setAnim({})
@@ -269,15 +271,18 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
   return (
     <div className="fight">
       <section className="card fight__arena" aria-label="Combate">
-        <div className="arena-field">
+        <div className={`arena-field ${anim.fx && (anim.fx.crit || anim.fx.eff >= 2) ? 'is-shaking' : ''}`}>
+          <HabitatScene habitat={habitatFor(foe.types)} />
           <HpBox fighter={foe} className="arena-field__foe-box" />
           <div className={`arena-field__mon arena-field__mon--foe ${anim.attacker === 'foe' ? 'is-attacking' : ''} ${anim.hit === 'foe' ? 'is-hit' : ''} ${foe.hp <= 0 ? 'is-fainted' : ''}`} key={`f-${foe.id}`}>
             <span className="arena-field__pad" aria-hidden="true" />
             {foe.front && <img src={foe.front} alt={foe.name} width={192} height={192} />}
+            {anim.fx?.side === 'foe' && <HitEffect fx={anim.fx} />}
           </div>
           <div className={`arena-field__mon arena-field__mon--me ${anim.attacker === 'player' ? 'is-attacking' : ''} ${anim.hit === 'player' ? 'is-hit' : ''} ${me.hp <= 0 ? 'is-fainted' : ''}`} key={`m-${me.id}`}>
             <span className="arena-field__pad" aria-hidden="true" />
             <img src={me.back ?? me.front ?? ''} alt={me.name} width={192} height={192} />
+            {anim.fx?.side === 'player' && <HitEffect fx={anim.fx} />}
           </div>
           <HpBox fighter={me} mine className="arena-field__me-box" />
         </div>
@@ -342,6 +347,25 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
         </details>
       </section>
     </div>
+  )
+}
+
+/** Golpe que se pinta sobre el Pokémon que lo recibe. */
+interface HitFx { side: 'player' | 'foe'; color: string; damage: number; crit: boolean; eff: number; key: number }
+
+/**
+ * Efecto del golpe: un destello y chispas del color del tipo del ataque, y el daño flotando hacia arriba.
+ * Es decorativo (aria-hidden): el texto del combate ya dice lo que ha pasado.
+ */
+function HitEffect({ fx }: { fx: HitFx }) {
+  const tag = fx.eff === 0 ? 'No afecta' : fx.crit ? '¡Crítico!' : fx.eff >= 2 ? '¡Súper eficaz!' : fx.eff < 1 ? 'Poco eficaz' : ''
+  return (
+    <span className={`hitfx ${fx.eff === 0 ? 'is-immune' : ''}`} style={{ '--fx': fx.color } as CSSProperties} key={fx.key} aria-hidden="true">
+      {fx.eff > 0 && <span className="hitfx__burst" />}
+      {fx.eff > 0 && Array.from({ length: 8 }, (_, i) => <i key={i} style={{ '--a': `${i * 45 + 20}deg` } as CSSProperties} />)}
+      {fx.damage > 0 && <span className="hitfx__dmg num">-{fx.damage}</span>}
+      {tag && <span className="hitfx__tag">{tag}</span>}
+    </span>
   )
 }
 
