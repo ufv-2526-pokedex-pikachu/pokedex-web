@@ -9,6 +9,7 @@ import { PokemonPage } from './pages/PokemonPage'
 import { CapturePage } from './pages/CapturePage'
 import { TeamsPage } from './pages/TeamsPage'
 import { TeamEditorPage } from './pages/TeamEditorPage'
+import { BattlePage } from './pages/BattlePage'
 import { ToastProvider } from './components/Toast'
 
 /** Si no hay sesión, manda a /entrar y recuerda adónde querías ir. */
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="equipos" element={<TeamsPage />} />
             <Route path="equipos/nuevo" element={<TeamEditorPage />} />
             <Route path="equipos/:id" element={<TeamEditorPage />} />
+            <Route path="batalla" element={<BattlePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

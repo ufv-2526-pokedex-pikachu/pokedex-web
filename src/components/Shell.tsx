@@ -13,6 +13,7 @@ export const NAV = [
   { to: '/pokedex', label: 'Mi Pokédex', end: false },
   { to: '/capturar', label: 'Capturar', end: false },
   { to: '/equipos', label: 'Equipos', end: false },
+  { to: '/batalla', label: 'Batalla', end: false },
 ] as const
 
 function titleFor(path: string): string {

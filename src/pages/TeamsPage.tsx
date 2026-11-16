@@ -74,6 +74,7 @@ export function TeamsPage() {
             </div>
             <TeamSlots members={t.members} />
             <div className="team-card__actions">
+              <Link to="/batalla" className="btn">Combatir</Link>
               <Link to={`/equipos/${t.id}`} className="btn">Editar</Link>
               <button type="button" className="btn" onClick={() => download(t)} disabled={downloading === t.id}>
                 {downloading === t.id && <span className="spinner" aria-hidden="true" />}PDF

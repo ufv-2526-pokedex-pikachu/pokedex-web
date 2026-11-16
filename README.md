@@ -6,7 +6,7 @@ Hecha con React 19, TypeScript y Vite.
 
 ## Tests
 
-Las reglas del minijuego de captura (`src/lib/capture.ts`) y la tabla de tipos (`src/lib/typechart.ts`) tienen tests:
+Las reglas del minijuego de captura (`src/lib/capture.ts`), la tabla de tipos (`src/lib/typechart.ts`) y el motor de combate (`src/lib/battle.ts`) tienen tests:
 
 ```bash
 npm test
@@ -44,6 +44,7 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 | Mi Pokédex (pestañas, orden, páginas, favoritos, exportar) | `GET /pokedex` con `captured`, `favorite`, `sort`, `order`, `limit`, `offset`; `GET /pokedex/stats` para los totales; `PATCH /pokedex/{id}`; `GET /pokedex/export` |
 | Capturar (buscador, hierba alta y minijuego) | `GET /pokemon/search`, `GET /pokemon/{id}`, `POST /pokedex`, `PATCH /pokedex/{id}` |
 | Equipos (lista, crear, editar, ordenar, PDF) | `GET /teams`, `POST /teams`, `PUT /teams/{id}`, `GET /teams/{id}/export`; `GET /pokemon/{id}` para las stats del resumen |
+| Batalla por turnos | `GET /teams`, `GET /pokemon/{id}` (stats y sprites de los dos equipos). El combate lo calcula la web (`src/lib/battle.ts`) |
 | Ficha de un Pokémon | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
 
 ## Notas sobre la API
@@ -52,3 +53,4 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
   - al capturar, no envía la fecha y la API pone la de hoy;
   - al elegir una fecha en la ficha, la envía con zona horaria (`toApiDate` en `src/lib/format.ts`).
 - **Equipos.** La API no tiene endpoint para borrar equipos, así que la web no lo ofrece. Tampoco deja borrar de la Pokédex un Pokémon que está en un equipo: responde 409 y la web muestra su mensaje.
+- **Batallas.** La API no guarda combates. El récord de victorias y derrotas se guarda solo en el navegador (`localStorage`).
