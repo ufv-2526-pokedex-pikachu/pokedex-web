@@ -1,5 +1,5 @@
 .home { display: grid; gap: var(--gap); max-width: 1320px; }
-.home__head { display: grid; gap: 4px; margin-bottom: 10px; }
+.home__head { margin-bottom: 10px; }
 
 /* Las cifras van en una sola tarjeta dividida, no en siete tarjetas sueltas. */
 .figures {

@@ -4,6 +4,14 @@ Web para entrenadores que usa la [Pokédex API](https://github.com/ufv-2526-poke
 
 Hecha con React 19, TypeScript y Vite.
 
+## Tests
+
+Las reglas del minijuego de captura (`src/lib/capture.ts`) tienen tests:
+
+```bash
+npm test
+```
+
 ## Cómo arrancarla
 
 1. Arranca la API en el puerto 8000, siguiendo su README.
@@ -34,4 +42,11 @@ Si la API está en otra dirección, indícalo con `API_URL`. En PowerShell, por 
 | Acceso (entrar y crear cuenta) | `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `POST /auth/refresh` |
 | Inicio (resumen y muro de Kanto) | `GET /pokedex/stats`, `GET /pokedex` (paginado de 100 en 100) |
 | Mi Pokédex (pestañas, orden, páginas, favoritos, exportar) | `GET /pokedex` con `captured`, `favorite`, `sort`, `order`, `limit`, `offset`; `GET /pokedex/stats` para los totales; `PATCH /pokedex/{id}`; `GET /pokedex/export` |
+| Capturar (buscador, hierba alta y minijuego) | `GET /pokemon/search`, `GET /pokemon/{id}`, `POST /pokedex`, `PATCH /pokedex/{id}` |
 | Ficha de un Pokémon | `GET /pokemon/{id}`, `GET /pokemon/{id}/card`, `POST /pokedex`, `PATCH /pokedex/{id}`, `DELETE /pokedex/{id}` |
+
+## Notas sobre la API
+
+- **Fechas de captura.** Si `capture_date` llega sin zona horaria (por ejemplo `"2026-11-16"`), la API responde 500 en vez de 422. La web nunca manda fechas así:
+  - al capturar, no envía la fecha y la API pone la de hoy;
+  - al elegir una fecha en la ficha, la envía con zona horaria (`toApiDate` en `src/lib/format.ts`).

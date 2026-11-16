@@ -6,6 +6,7 @@ import { AuthPage } from './pages/AuthPage'
 import { HomePage } from './pages/HomePage'
 import { PokedexPage } from './pages/PokedexPage'
 import { PokemonPage } from './pages/PokemonPage'
+import { CapturePage } from './pages/CapturePage'
 import { ToastProvider } from './components/Toast'
 
 /** Si no hay sesión, manda a /entrar y recuerda adónde querías ir. */
@@ -28,6 +29,7 @@ export default function App() {
             <Route index element={<HomePage />} />
             <Route path="pokedex" element={<PokedexPage />} />
             <Route path="pokemon/:id" element={<PokemonPage />} />
+            <Route path="capturar" element={<CapturePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

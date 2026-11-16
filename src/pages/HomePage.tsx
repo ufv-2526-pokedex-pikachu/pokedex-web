@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import type { PokedexEntry, PokedexStats } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
@@ -41,7 +41,8 @@ export function HomePage() {
 
   return (
     <div className="home">
-      <div className="home__head">
+      <div className="home__head title-row">
+        <div>
         <h1 className="page-title">Hola, {user?.username}</h1>
         <p className="muted">
           {entries === null
@@ -50,6 +51,8 @@ export function HomePage() {
               ? 'Has capturado los 151 Pokémon de Kanto.'
               : `Te faltan ${missing} Pokémon para completar Kanto.`}
         </p>
+        </div>
+        <Link to="/capturar" className="btn btn-primary">Capturar</Link>
       </div>
 
       {error && <p className="alert" role="alert">{error}</p>}

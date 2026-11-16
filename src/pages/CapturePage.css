@@ -1,0 +1,109 @@
+.capture { display: grid; gap: 22px; max-width: 1320px; }
+.capture__grid { display: grid; grid-template-columns: minmax(300px, 2fr) 3fr; gap: var(--gap); align-items: start; }
+
+/* ---------- Buscador ---------- */
+.finder { display: grid; gap: 14px; }
+.finder__search { position: relative; }
+.finder__spin { position: absolute; right: 14px; top: 14px; color: var(--muted); }
+.finder__list { list-style: none; margin: 0; padding: 0; display: grid; max-height: 520px; overflow-y: auto; }
+.finder__empty { padding: 12px 4px; }
+.finder__item {
+  width: 100%; display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 12px;
+  padding: 8px; border: 0; border-radius: 12px; background: transparent; text-align: left; cursor: pointer;
+  transition: background-color 120ms;
+}
+.finder__item:hover { background: var(--raised); }
+.finder__item:disabled { cursor: wait; }
+.finder__item img { image-rendering: pixelated; }
+.finder__noimg { width: 48px; height: 48px; border-radius: 10px; background: var(--raised); }
+.finder__text { display: grid; gap: 4px; min-width: 0; }
+.finder__name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.finder__state { font-size: var(--fs-small); color: var(--faint); text-align: right; justify-self: end; }
+.finder__state.is-captured { color: var(--accent); }
+
+/* ---------- Escenario ---------- */
+.arena { min-height: 560px; display: grid; }
+.arena__empty { display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; }
+.arena__ball-big { opacity: 0.9; margin-bottom: 8px; animation: idle-bob 2.4s ease-in-out infinite; }
+
+.arena__stage { display: grid; grid-template-rows: auto 1fr auto auto; gap: 12px; }
+.arena__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.arena__name { font-size: 20px; line-height: 26px; font-weight: 600; margin-bottom: 6px; }
+.arena__balls { display: flex; gap: 6px; }
+.arena__balls .is-used { opacity: 0.2; filter: grayscale(1); }
+
+.arena__field {
+  display: grid; place-items: center; min-height: 330px; border-radius: 16px;
+  background: var(--raised); overflow: hidden;
+}
+.arena__target { position: relative; width: 240px; height: 240px; display: grid; place-items: center; }
+.arena__mon {
+  position: relative; width: 220px; height: 220px; object-fit: contain;
+  animation: idle-bob 2.2s ease-in-out infinite;
+  transition: transform 260ms var(--ease-out), opacity 260ms, filter 260ms;
+}
+.arena__shadow { position: absolute; bottom: 6px; width: 150px; height: 22px; border-radius: 50%; background: #0c0c0c; }
+
+/* El anillo: su escala la pone JavaScript en cada fotograma. */
+.arena__ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 3px solid var(--accent); pointer-events: none; will-change: transform;
+}
+
+/* La Poké Ball espera fuera de la vista y entra al lanzar. */
+.arena__ball { position: absolute; left: 50%; top: 50%; margin: -22px 0 0 -22px; opacity: 0; pointer-events: none; }
+.is-throwing .arena__ball { animation: ball-fly 700ms cubic-bezier(0.3, 0.6, 0.4, 1) forwards; }
+.is-shaking .arena__ball, .is-caught .arena__ball {
+  opacity: 1; transform: translateY(70px);
+}
+.is-shaking .arena__ball svg { animation: ball-shake 750ms ease-in-out both; animation-iteration-count: var(--shakes); transform-origin: 50% 90%; }
+.is-caught .arena__ball svg { animation: ball-click 400ms ease-out; }
+
+/* Al tocarle la bola, el Pokémon se encoge dentro con un destello. */
+.is-throwing .arena__mon { animation: none; }
+.is-shaking .arena__mon, .is-caught .arena__mon {
+  animation: none; transform: scale(0.05) translateY(1400px); opacity: 0; filter: brightness(3);
+}
+.is-escaped .arena__mon { animation: pop-out 420ms var(--ease-out); }
+.is-fled .arena__mon { transform: translateX(160%); opacity: 0; transition: transform 600ms ease-in, opacity 600ms; }
+
+.arena__stars { position: absolute; left: 50%; top: calc(50% + 70px); }
+.arena__stars i {
+  position: absolute; width: 8px; height: 8px; border-radius: 2px; background: var(--accent);
+  animation: star 700ms var(--ease-out) forwards;
+}
+.arena__stars i:nth-child(1) { --dx: -70px; --dy: -40px; }
+.arena__stars i:nth-child(2) { --dx: 70px; --dy: -40px; }
+.arena__stars i:nth-child(3) { --dx: -40px; --dy: -80px; }
+.arena__stars i:nth-child(4) { --dx: 40px; --dy: -80px; }
+.arena__stars i:nth-child(5) { --dx: 0; --dy: -100px; }
+.arena__stars i:nth-child(6) { --dx: 0; --dy: 30px; }
+
+.arena__message { text-align: center; font-size: 18px; line-height: 24px; font-weight: 600; min-height: 24px; }
+.is-caught .arena__message { color: var(--accent); }
+.arena__actions { display: grid; justify-items: center; gap: 8px; }
+.arena__actions:has(.btn + .btn) { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.arena__throw { height: 48px; padding: 0 32px; font-size: 15px; }
+.arena__tip { font-size: var(--fs-small); text-align: center; }
+
+@keyframes idle-bob { 50% { transform: translateY(-6px); } }
+@keyframes ball-fly {
+  0% { opacity: 1; transform: translate(-40px, 240px) rotate(0) scale(1.3); }
+  70% { opacity: 1; transform: translate(0, -10px) rotate(540deg) scale(1); }
+  100% { opacity: 1; transform: translate(0, 70px) rotate(720deg) scale(1); }
+}
+@keyframes ball-shake {
+  0%, 60%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-22deg); }
+  35% { transform: rotate(18deg); }
+}
+@keyframes ball-click { 50% { transform: scale(0.9); } }
+@keyframes pop-out { from { transform: scale(0.2); opacity: 0; filter: brightness(3); } }
+@keyframes star { from { transform: translate(0, 0) rotate(0); opacity: 1; } to { transform: translate(var(--dx), var(--dy)) rotate(180deg); opacity: 0; } }
+
+@media (max-width: 900px) {
+  .capture__grid { grid-template-columns: 1fr; }
+  .arena { order: -1; min-height: 0; }
+  .arena__field { min-height: 280px; }
+  .finder__list { max-height: none; }
+}

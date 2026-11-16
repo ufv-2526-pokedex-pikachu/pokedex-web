@@ -29,7 +29,7 @@ const SORTS = [
 ] as const
 
 const EMPTY_TEXT: Record<string, string> = {
-  todos: 'Tu Pokédex está vacía. Elige un Pokémon en el muro de Kanto para añadirlo.',
+  todos: 'Tu Pokédex está vacía. Sal a capturar tu primer Pokémon.',
   capturados: 'Todavía no has capturado ningún Pokémon.',
   vistos: 'No tienes Pokémon vistos sin capturar.',
   favoritos: 'No tienes favoritos. Marca la estrella de un Pokémon para guardarlo aquí.',
@@ -170,7 +170,7 @@ export function PokedexPage() {
         {entries?.length === 0 && (
           <div className="dex-empty">
             <p>{EMPTY_TEXT[tab.id]}</p>
-            {tab.id === 'todos' && <Link to="/" className="btn">Ir al muro de Kanto</Link>}
+            {tab.id === 'todos' && <Link to="/capturar" className="btn">Capturar</Link>}
           </div>
         )}
 

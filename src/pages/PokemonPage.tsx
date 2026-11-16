@@ -11,7 +11,7 @@ import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/typ
 import { TypePills } from '../components/TypePill'
 import { useToast } from '../components/Toast'
 import { allEntries, pokemonDetail } from '../lib/entries'
-import { formatDate, todayIso } from '../lib/format'
+import { formatDate, localDay, toApiDate, todayIso } from '../lib/format'
 import { KANTO_TOTAL, artworkUrl, dexNumber, displayName } from '../lib/pokemon'
 import './PokemonPage.css'
 
@@ -224,20 +224,20 @@ function EntryForm({ entry, onSaved, onDeleted }: {
   const [nickname, setNickname] = useState(entry.nickname ?? '')
   const [notes, setNotes] = useState(entry.notes ?? '')
   const [captured, setCaptured] = useState(entry.is_captured)
-  const [date, setDate] = useState(entry.capture_date?.slice(0, 10) ?? '')
+  const [date, setDate] = useState((entry.capture_date ? localDay(entry.capture_date) : ''))
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   useEffect(() => {
     setNickname(entry.nickname ?? ''); setNotes(entry.notes ?? '')
-    setCaptured(entry.is_captured); setDate(entry.capture_date?.slice(0, 10) ?? '')
+    setCaptured(entry.is_captured); setDate((entry.capture_date ? localDay(entry.capture_date) : ''))
   }, [entry])
 
   const changes: PokedexEntryUpdate = {}
   if (nickname.trim() !== (entry.nickname ?? '')) changes.nickname = nickname.trim() || null
   if (notes.trim() !== (entry.notes ?? '')) changes.notes = notes.trim() || null
   if (captured !== entry.is_captured) changes.is_captured = captured
-  if (captured && date && date !== entry.capture_date?.slice(0, 10)) changes.capture_date = date
+  if (captured && date && date !== (entry.capture_date ? localDay(entry.capture_date) : '')) changes.capture_date = toApiDate(date)
   const dirty = Object.keys(changes).length > 0
 
   async function save(e: FormEvent) {

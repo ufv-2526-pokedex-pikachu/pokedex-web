@@ -5,8 +5,19 @@ export function formatDate(value: string): string {
   return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '')
 }
 
-/** Hoy en formato de fecha de la API: "2026-11-16" (hora local, no UTC). */
-export function todayIso(): string {
-  const d = new Date()
+/** Día local "2026-11-16" de un instante (por defecto, ahora). La API guarda en UTC. */
+export function localDay(value: string | Date = new Date()): string {
+  const d = typeof value === 'string' ? new Date(value) : value
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+export const todayIso = () => localDay()
+
+/**
+ * Fecha elegida en un <input type="date"> ("2026-11-16") → instante con zona horaria para la API.
+ * La API devuelve 500 si recibe una fecha sin zona (no la valida como 422), así que siempre se manda
+ * con zona. Se usa el mediodía local para que el día no cambie al pasar a UTC.
+ */
+export function toApiDate(day: string): string {
+  return new Date(`${day}T12:00:00`).toISOString()
 }
