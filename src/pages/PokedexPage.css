@@ -44,7 +44,7 @@
 }
 .star:hover { color: var(--text); background: var(--raised); }
 .star:active { transform: scale(0.88); }
-.star.is-on { color: var(--accent); }
+.star.is-on { color: var(--accent-ink); }
 
 .dex-row--skeleton span { grid-column: 1 / -1; height: 56px; border-radius: 12px; background: var(--surface); animation: pulse 1.4s ease-in-out infinite; }
 

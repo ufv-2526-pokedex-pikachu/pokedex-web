@@ -19,7 +19,7 @@
 .finder__text { display: grid; gap: 4px; min-width: 0; }
 .finder__name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .finder__state { font-size: var(--fs-small); color: var(--faint); text-align: right; justify-self: end; }
-.finder__state.is-captured { color: var(--accent); }
+.finder__state.is-captured { color: var(--accent-ink); font-weight: 600; }
 
 /* Sugerencias: sprites de Kanto que aún no tienes, en 4 columnas. */
 .suggest { display: grid; gap: 10px; margin-top: 4px; }
@@ -94,7 +94,7 @@
 .arena__stars i:nth-child(6) { --dx: 0; --dy: 30px; }
 
 .arena__message { text-align: center; font-size: 18px; line-height: 24px; font-weight: 600; min-height: 24px; }
-.is-caught .arena__message { color: var(--accent); }
+.is-caught .arena__message { color: var(--accent-ink); }
 .arena__actions { display: grid; justify-items: center; gap: 8px; }
 .arena__actions:has(.btn + .btn) { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
 .arena__throw { height: 48px; padding: 0 32px; font-size: 15px; }

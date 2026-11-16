@@ -9,7 +9,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import type { PokedexEntry, PokedexEntryUpdate, PokemonDetail } from '../api/types'
-import { CryWave } from '../components/CryWave'
+import { CryScene } from '../components/CryScene'
 import { EvolutionChain } from '../components/EvolutionChain'
 import { HabitatScene } from '../components/HabitatScene'
 import { HoloCard } from '../components/HoloCard'
@@ -165,7 +165,7 @@ export function PokemonPage() {
 
           <section className="card mon__cry" aria-labelledby="cry-title">
             <h2 id="cry-title" className="card-title">Su grito</h2>
-            <CryWave id={id} name={name} />
+            <CryScene id={id} name={entry?.nickname ?? name} />
           </section>
 
           <div className="mon__grid">

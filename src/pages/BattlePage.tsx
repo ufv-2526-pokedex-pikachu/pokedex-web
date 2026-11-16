@@ -15,6 +15,9 @@ import type { Action, BattleEvent, BattleState, Fighter } from '../lib/battle'
 import { buildFighter, mvp, newBattle, playTurn } from '../lib/battle'
 import { pokemonDetail } from '../lib/entries'
 import { habitatFor } from '../lib/habitat'
+import { confetti } from '../lib/confetti'
+import { emit } from '../lib/events'
+import { sfx } from '../lib/sfx'
 import { HabitatScene } from '../components/HabitatScene'
 import { Sprite } from '../components/Sprite'
 import { KANTO_TOTAL, TYPE_COLOR, displayName, spriteUrl } from '../lib/pokemon'
@@ -244,6 +247,7 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
         view = patchHp(view, target, ev.targetHp)
         setShown(view)
         setAnim({ hit: ev.damage > 0 ? target : undefined, fx: { side: target, color: TYPE_COLOR[ev.move.type] ?? '#fff', damage: ev.damage, crit: ev.crit, eff: ev.eff, key: Date.now() } })
+        if (ev.damage > 0) sfx.hit(ev.crit ? 2 : ev.eff)
         if (text[1]) { await wait(350); setMessage(`${text[0]} ${text[1]}`) }
         await wait(STEP_MS - 450)
         setAnim({})
@@ -254,6 +258,7 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
         await wait(STEP_MS)
       } else {
         setMessage(text[0])
+        if (ev.kind === 'faint') sfx.faint()
         await wait(ev.kind === 'end' ? 300 : STEP_MS)
       }
       setLog((l) => [...l, text.join(' ')].slice(-40))
@@ -261,7 +266,12 @@ function Fight({ initial, rivalName, onEnd, finished, onRematch }: {
     setState(next)
     setShown(next)
     setBusy(false)
-    if (next.winner) onEnd(next.winner === 'player')
+    if (next.winner) {
+      const won = next.winner === 'player'
+      if (won) { sfx.win(); confetti(140) } else sfx.lose()
+      emit(won ? 'win' : 'lose')
+      onEnd(won)
+    }
     else if (next.mustSwitch) setMessage('Elige a quién sacar.')
     else setMessage(`¿Qué debería hacer ${next.player.team[next.player.active].name}?`)
   }

@@ -16,6 +16,9 @@ import {
 } from '../lib/capture'
 import { allEntries, pokemonDetail } from '../lib/entries'
 import { HABITAT_ES, habitatFor } from '../lib/habitat'
+import { confetti } from '../lib/confetti'
+import { emit } from '../lib/events'
+import { sfx } from '../lib/sfx'
 import { HabitatScene } from '../components/HabitatScene'
 import { KANTO_TOTAL, artworkUrl, dexNumber, displayName, spriteUrl } from '../lib/pokemon'
 import './CapturePage.css'
@@ -265,17 +268,25 @@ function Arena({ encounter, setEncounter, alreadyCaptured, onResult, onAgain }: 
     const chance = catchChance(total, ring)
     const n = shakes(chance, Math.random())
     patch({ phase: 'throwing', quality: throwQuality(ring), ballsLeft: ballsLeft - 1, shakeCount: 0 })
+    sfx.throwBall()
     await wait(700)
     patch({ phase: 'shaking', shakeCount: n })
+    // Un «toc» por cada sacudida, al ritmo de la animación (750 ms cada una).
+    for (let i = 0; i < n; i++) setTimeout(sfx.shake, i * 750 + 120)
     await wait(Math.max(n, 1) * 750 + 250)
     if (n === 3) {
       patch({ phase: 'caught' })
+      sfx.caught()
+      confetti()
       await onResult(encounter, true)
+      emit('capture')
     } else if (ballsLeft - 1 === 0) {
       patch({ phase: 'escaped' })
       await wait(900)
       patch({ phase: 'fled' })
+      sfx.fled()
       await onResult(encounter, false)
+      emit('flee')
     } else {
       patch({ phase: 'escaped' })
       await wait(900)

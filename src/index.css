@@ -198,3 +198,11 @@ a { color: inherit; }
 .boot { min-height: 100vh; display: grid; place-items: center; color: var(--muted); }
 
 .sprite { image-rendering: pixelated; }
+
+/* Confeti (lo crea src/lib/confetti.ts): trozos que caen girando. */
+.confetti { position: fixed; inset: 0; z-index: 100; pointer-events: none; overflow: hidden; }
+.confetti i {
+  position: absolute; top: -20px; width: 10px; height: 14px; border: 1.5px solid var(--ink); border-radius: 2px;
+  animation: confetti-fall 1.4s cubic-bezier(0.25, 0.6, 0.45, 1) forwards;
+}
+@keyframes confetti-fall { to { transform: translate(var(--dx), 105vh) rotate(var(--rot)); } }

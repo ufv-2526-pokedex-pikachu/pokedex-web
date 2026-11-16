@@ -112,7 +112,7 @@
 .move__name { font-family: var(--display); font-size: 18px; font-weight: 700; }
 .move__meta { display: flex; align-items: center; gap: 8px; }
 .move__eff { font-size: var(--fs-small); color: var(--faint); min-height: 16px; line-height: 16px; }
-.move__eff.is-good { color: var(--accent); }
+.move__eff.is-good { color: var(--accent-ink); font-weight: 600; }
 .move__eff.is-bad { color: var(--pill-negative-ink); }
 
 .fight__team-title { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 4px; }
@@ -134,7 +134,7 @@
 
 .result { display: grid; gap: 16px; }
 .result__title { font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.02em; }
-.result__title.is-win { color: var(--accent); }
+.result__title.is-win { color: var(--accent-ink); }
 
 @media (max-width: 1000px) {
   .setup, .fight { grid-template-columns: 1fr; }
