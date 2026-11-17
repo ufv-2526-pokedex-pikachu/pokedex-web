@@ -13,6 +13,7 @@ import type { DexState } from '../components/KantoWall'
 import { Mark } from '../components/Mark'
 import { Partner } from '../components/Partner'
 import { usePhase } from '../components/SkyScene'
+import { useTrainerName } from '../components/TrainerMenu'
 import { greetingAt } from '../lib/daytime'
 import { allEntries } from '../lib/entries'
 import { partnerLine, pickPartner, savedPartner } from '../lib/partner'
@@ -21,6 +22,7 @@ import './HomePage.css'
 
 export function HomePage() {
   const { user } = useAuth()
+  const trainer = useTrainerName()
   const navigate = useNavigate()
   const phase = usePhase()
   const [entries, setEntries] = useState<PokedexEntry[] | null>(null)
@@ -54,7 +56,7 @@ export function HomePage() {
     <div className="home">
       <section className="home__hero">
         <div className="home__hello">
-          <h1 className="page-title home__title">¡{greetingAt(new Date().getHours())}, {user?.username}!</h1>
+          <h1 className="page-title home__title">¡{greetingAt(new Date().getHours())}, {trainer}!</h1>
           <p className="home__lead">
             {entries === null ? 'Abriendo tu Pokédex…'
               : missing === 0 ? 'Has capturado los 151 Pokémon de Kanto.'

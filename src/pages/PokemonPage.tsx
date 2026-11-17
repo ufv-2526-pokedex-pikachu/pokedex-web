@@ -14,6 +14,7 @@ import { EvolutionChain } from '../components/EvolutionChain'
 import { HabitatScene } from '../components/HabitatScene'
 import { HoloCard } from '../components/HoloCard'
 import { Sprite } from '../components/Sprite'
+import { useTrainerName } from '../components/TrainerMenu'
 import { CARD_TRANSITION } from '../components/useHoloTilt'
 import { Icon } from '../components/Icon'
 import { TypePills } from '../components/TypePill'
@@ -37,6 +38,7 @@ export function PokemonPage() {
   const navigate = useNavigate()
   const toast = useToast()
   const { user } = useAuth()
+  const trainer = useTrainerName()
 
   const [detail, setDetail] = useState<PokemonDetail | null>(null)
   /** undefined = cargando; null = no está en tu Pokédex. */
@@ -155,7 +157,7 @@ export function PokemonPage() {
             <div className="mon__card">
               {detail ? (
                 <HoloCard
-                  detail={detail} shiny={shiny} trainer={user?.username}
+                  detail={detail} shiny={shiny} trainer={trainer}
                   owned={entry === undefined || entry === null ? null : entry.is_captured ? 'captured' : 'seen'}
                   nickname={entry?.nickname} captureDate={entry?.capture_date}
                 />

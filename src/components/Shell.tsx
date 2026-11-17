@@ -5,12 +5,12 @@
  */
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { useAuth } from '../auth/AuthContext'
 import { Wordmark } from './Mark'
 import { SkyScene, usePhase } from './SkyScene'
 import { CompanionDock } from './CompanionDock'
 import { AchievementWatcher } from './AchievementWatcher'
 import { Tour } from './Tour'
+import { TrainerMenu } from './TrainerMenu'
 import { tour } from '../lib/tour'
 import { setSound, sfx, soundOn } from '../lib/sfx'
 import './Shell.css'
@@ -26,7 +26,6 @@ export const NAV = [
 ] as const
 
 export function Shell() {
-  const { user, logout } = useAuth()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const phase = usePhase()
@@ -77,9 +76,7 @@ export function Shell() {
               {sound ? <><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></> : <path d="M17 9l5 6M22 9l-5 6" />}
             </svg>
           </button>
-          <span className="avatar" aria-hidden="true">{user?.username.charAt(0).toUpperCase()}</span>
-          <span className="topbar__name">{user?.username}</span>
-          <button type="button" className="btn btn-ghost topbar__logout" onClick={logout}>Salir</button>
+          <TrainerMenu />
           <button
             type="button" className="btn topbar__menu" aria-expanded={menuOpen} aria-controls="secciones"
             aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} onClick={() => setMenuOpen((o) => !o)}
