@@ -4,8 +4,8 @@
  */
 import type { PokedexEntry } from '../api/types'
 import { displayName } from '../lib/pokemon'
-import { Sprite } from './Sprite'
-import { Wearable, useAccessory } from './Wearable'
+import { useAccessory } from './Wearable'
+import { WornSprite } from './WornSprite'
 import './Partner.css'
 
 export function Partner({ entry, line }: { entry: PokedexEntry | null; line: string }) {
@@ -17,7 +17,7 @@ export function Partner({ entry, line }: { entry: PokedexEntry | null; line: str
       <p className="partner__bubble">{line}</p>
       <div className="partner__stage">
         <span className="partner__grass" aria-hidden="true" />
-        <Wearable accessory={accessory}><Sprite id={id} alt={name} className="partner__sprite" /></Wearable>
+        <WornSprite id={id} accessory={accessory} alt={name} className="partner__sprite" />
       </div>
       <figcaption className="partner__name">{entry ? `Tu compañero · ${name}` : 'Te espera un compañero'}</figcaption>
     </figure>

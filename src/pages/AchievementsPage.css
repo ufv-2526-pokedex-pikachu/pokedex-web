@@ -4,8 +4,7 @@
 .closet { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: center; }
 .closet__stage { position: relative; height: 260px; border-radius: 22px; background: #9fe0ff; border: var(--line) solid var(--ink); display: grid; place-items: end center; overflow: hidden; }
 .closet__grass { position: absolute; bottom: -30px; width: 130%; height: 90px; border-radius: 50%; background: #6cc65a; border-top: var(--line) solid var(--ink); }
-.closet__stage .wear { position: relative; bottom: 20px; }
-.closet__mon { height: 190px; width: auto; max-width: 240px; object-fit: contain; }
+.closet__mon { position: relative; bottom: 20px; height: 190px; width: auto; max-width: 240px; object-fit: contain; }
 .closet__body { display: grid; gap: 12px; }
 .closet__list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .closet__item {

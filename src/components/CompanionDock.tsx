@@ -12,8 +12,8 @@ import { REACTION, onGameEvent } from '../lib/events'
 import type { GameEvent } from '../lib/events'
 import { pickPartner, savedPartner } from '../lib/partner'
 import { displayName } from '../lib/pokemon'
-import { Sprite } from './Sprite'
-import { Wearable, useAccessory } from './Wearable'
+import { useAccessory } from './Wearable'
+import { WornSprite } from './WornSprite'
 import './CompanionDock.css'
 
 const SLEEP_AFTER_MS = 45_000
@@ -74,7 +74,7 @@ export function CompanionDock() {
       {line && <p className="dock__bubble" role="status">{line}</p>}
       {mood === 'sleep' && <span className="dock__zzz" aria-hidden="true">Zzz</span>}
       <div className="dock__mon">
-        <Wearable accessory={accessory}><Sprite id={partner.pokemon_id} alt={name} /></Wearable>
+        <WornSprite id={partner.pokemon_id} accessory={accessory} alt={name} />
       </div>
     </aside>
   )

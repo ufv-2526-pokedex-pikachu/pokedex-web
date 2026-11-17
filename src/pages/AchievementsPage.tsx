@@ -8,8 +8,8 @@ import { ApiError } from '../api/client'
 import type { PokedexEntry } from '../api/types'
 import { useAuth } from '../auth/AuthContext'
 import { loadAchievements } from '../components/AchievementWatcher'
-import { Sprite } from '../components/Sprite'
-import { AccessoryArt, Wearable, useAccessory } from '../components/Wearable'
+import { AccessoryArt, useAccessory } from '../components/Wearable'
+import { WornSprite } from '../components/WornSprite'
 import { ACCESSORIES, saveAccessory, unlockedAccessories } from '../lib/accessories'
 import type { Achievement } from '../lib/achievements'
 import { allEntries } from '../lib/entries'
@@ -56,9 +56,7 @@ export function AchievementsPage() {
       <section className="card closet" aria-labelledby="closet-title">
         <div className="closet__stage">
           <span className="closet__grass" aria-hidden="true" />
-          <Wearable accessory={accessory}>
-            <Sprite id={partner?.pokemon_id ?? 25} alt={partnerName} className="closet__mon" />
-          </Wearable>
+          <WornSprite id={partner?.pokemon_id ?? 25} accessory={accessory} alt={partnerName} className="closet__mon" />
         </div>
         <div className="closet__body">
           <h2 id="closet-title" className="card-title">El armario de {partnerName}</h2>

@@ -1,14 +1,12 @@
 /**
- * El sprite del compañero con su accesorio puesto. Los accesorios son dibujos SVG propios
- * colocados encima del sprite (gorra arriba, gafas en la cara, bufanda abajo…).
- * Como cada Pokémon tiene una forma distinta, las posiciones son aproximadas: es un juego.
+ * Los iconos de los accesorios (botones del armario) y el accesorio que lleva puesto el compañero.
+ * El accesorio puesto sobre el sprite lo pinta WornSprite, píxel a píxel.
  */
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import { savedAccessory } from '../lib/accessories'
 import type { AccessoryId } from '../lib/accessories'
-import './Wearable.css'
 
 const INK = '#1b2440'
 
@@ -80,14 +78,4 @@ export function useAccessory(): AccessoryId | null {
     return () => window.removeEventListener('pokedex:accesorio', read)
   }, [user])
   return acc
-}
-
-/** Envuelve un sprite y le pone encima el accesorio. */
-export function Wearable({ accessory, children }: { accessory: AccessoryId | null; children: ReactNode }) {
-  return (
-    <span className="wear">
-      {children}
-      {accessory && <span className={`wear__item wear__item--${accessory}`}><AccessoryArt id={accessory} /></span>}
-    </span>
-  )
 }

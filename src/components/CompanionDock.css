@@ -4,7 +4,7 @@
   width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
   background: var(--surface); border: var(--line) solid var(--ink); box-shadow: var(--shadow); pointer-events: auto;
 }
-.dock__mon img { width: 78px; height: 78px; object-fit: contain; transform-origin: bottom center; }
+.dock__mon .sprite { width: 78px; height: 78px; object-fit: contain; transform-origin: bottom center; }
 .dock__bubble {
   max-width: 240px; padding: 10px 14px; border-radius: 18px; background: var(--surface); color: var(--ink);
   border: var(--line) solid var(--ink); box-shadow: var(--shadow-sm);
@@ -17,9 +17,9 @@
 }
 
 /* Contento: salta. Triste: se sacude. Dormido: se inclina, se apaga un poco y respira despacio. */
-.dock.is-happy .dock__mon img { animation: dock-jump 600ms var(--ease-out) 3; }
-.dock.is-sad .dock__mon img { animation: dock-shake 450ms ease-in-out 2; }
-.dock.is-sleep .dock__mon img { filter: saturate(0.6); transform: rotate(-12deg); animation: breathe 3s ease-in-out infinite; }
+.dock.is-happy .dock__mon .sprite { animation: dock-jump 600ms var(--ease-out) 3; }
+.dock.is-sad .dock__mon .sprite { animation: dock-shake 450ms ease-in-out 2; }
+.dock.is-sleep .dock__mon .sprite { filter: saturate(0.6); transform: rotate(-12deg); animation: breathe 3s ease-in-out infinite; }
 @keyframes dock-jump { 40% { transform: translateY(-16px) scale(1.05, 0.95); } }
 @keyframes dock-shake { 25% { transform: translateX(-6px) rotate(-6deg); } 75% { transform: translateX(6px) rotate(6deg); } }
 @keyframes breathe { 50% { transform: rotate(-12deg) scale(1.04); } }
@@ -29,6 +29,6 @@
 @media (max-width: 640px) {
   .dock { left: 12px; bottom: 12px; }
   .dock__mon { width: 64px; height: 64px; }
-  .dock__mon img { width: 54px; height: 54px; }
+  .dock__mon .sprite { width: 54px; height: 54px; }
   .dock__zzz { left: 50px; bottom: 56px; }
 }
