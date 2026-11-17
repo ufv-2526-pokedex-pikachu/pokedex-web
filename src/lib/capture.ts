@@ -20,13 +20,22 @@ export function difficulty(statTotal: number): number {
   return clamp((statTotal - 200) / 480, 0, 1)
 }
 
-/** Probabilidad de captura entre 0,05 y 0,97. */
+/** Probabilidad de captura entre 0,03 y 0,85 por lanzamiento. */
+export const CHANCE_MIN = 0.03
+export const CHANCE_MAX = 0.85
+
+/**
+ * Probabilidad de captura de un lanzamiento.
+ * Equilibrio buscado (se comprueba en los tests): un Pokémon medio cae a la primera unas 6 de cada 10 veces
+ * con un lanzamiento perfecto y unas 3 o 4 con uno normal, así que a veces hace falta la segunda o la
+ * tercera Poké Ball y a veces se escapa. Los muy débiles son generosos y los legendarios, un reto.
+ */
 export function catchChance(statTotal: number, ringScale: number): number {
-  const base = 0.75 - 0.45 * difficulty(statTotal)
-  // Anillo en el mínimo → +0,35; abierto del todo → +0.
-  const ringBonus = ((RING_MAX - clamp(ringScale, RING_MIN, RING_MAX)) / (RING_MAX - RING_MIN)) * 0.35
-  const legendary = statTotal >= 580 ? 0.55 : 1
-  return clamp((base + ringBonus) * legendary, 0.05, 0.97)
+  const base = 0.45 - 0.35 * difficulty(statTotal)
+  // Anillo en el mínimo → +0,30; abierto del todo → +0.
+  const ringBonus = ((RING_MAX - clamp(ringScale, RING_MIN, RING_MAX)) / (RING_MAX - RING_MIN)) * 0.3
+  const legendary = statTotal >= 580 ? 0.5 : 1
+  return clamp((base + ringBonus) * legendary, CHANCE_MIN, CHANCE_MAX)
 }
 
 /** Etiqueta del lanzamiento según lo cerrado que estaba el anillo. */

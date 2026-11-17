@@ -12,14 +12,28 @@ describe('captura', () => {
     expect(catchChance(320, 0.3)).toBeGreaterThan(catchChance(320, 1))
   })
 
-  it('la probabilidad se queda entre 0,05 y 0,97', () => {
+  it('la probabilidad se queda entre 0,03 y 0,85: nunca es segura', () => {
     for (const total of [100, 195, 320, 500, 680, 780]) {
       for (const ring of [0, 0.3, 0.6, 1, 2]) {
         const c = catchChance(total, ring)
-        expect(c).toBeGreaterThanOrEqual(0.05)
-        expect(c).toBeLessThanOrEqual(0.97)
+        expect(c).toBeGreaterThanOrEqual(0.03)
+        expect(c).toBeLessThanOrEqual(0.85)
       }
     }
+  })
+
+  it('equilibrio: a veces hace falta otra Poké Ball y a veces se escapa', () => {
+    const perfect = 0.3, normal = 0.85
+    const escape = (c: number) => (1 - c) ** 3 // falla las 3 Poké Balls
+    // Pokémon medio (unos 400 de stats, como Pidgeotto o Raticate).
+    expect(catchChance(400, perfect)).toBeGreaterThan(0.5)
+    expect(catchChance(400, perfect)).toBeLessThan(0.7)
+    expect(catchChance(400, normal)).toBeLessThan(0.4)
+    expect(escape(catchChance(400, normal))).toBeGreaterThan(0.2) // lanzando sin apuntar, se escapa a menudo
+    expect(escape(catchChance(400, perfect))).toBeLessThan(0.1) // apuntando bien, casi nunca
+    // Muy débil (Caterpie): generoso. Legendario (Mewtwo): un reto incluso apuntando bien.
+    expect(catchChance(195, perfect)).toBeGreaterThan(0.7)
+    expect(catchChance(680, perfect)).toBeLessThan(0.25)
   })
 
   it('3 sacudidas si la tirada entra; menos cuanto más lejos', () => {
