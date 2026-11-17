@@ -1,15 +1,16 @@
 /**
  * El sprite animado del compañero con su accesorio «puesto» de verdad.
  *
- * Descompone el GIF en fotogramas con la API ImageDecoder del navegador, en cada uno busca la cabeza
- * (src/lib/fit.ts) y pinta el accesorio píxel a píxel; luego reproduce la animación en un <canvas>
+ * Descompone el GIF en fotogramas con la API ImageDecoder del navegador, sigue la cabeza a lo largo de
+ * todos (src/lib/fit.ts → trackAnchors) y pinta el accesorio píxel a píxel en cada uno; luego reproduce la animación en un <canvas>
  * a la resolución original, ampliado con `image-rendering: pixelated`: misma definición que el sprite.
  * Navegadores sin ImageDecoder: el sprite quieto (PNG) con el accesorio ya puesto.
  * Sin accesorio, es el <Sprite> de siempre.
  */
 import { useEffect, useRef, useState } from 'react'
 import type { AccessoryId } from '../lib/accessories'
-import { anchors, paintAccessory } from '../lib/fit'
+import { anchors, paintAccessory, trackAnchors } from '../lib/fit'
+import type { Anchors } from '../lib/fit'
 import { animatedUrl, spriteUrl } from '../lib/pokemon'
 import { Sprite } from './Sprite'
 
@@ -17,6 +18,16 @@ interface Frame { bitmap: ImageBitmap; ms: number }
 interface Clip { width: number; height: number; frames: Frame[] }
 
 const cache = new Map<string, Promise<Clip>>()
+
+/** El seguimiento de la cabeza, en un Web Worker (hilo aparte); si no se puede, en el hilo principal. */
+function track(frames: ImageData[]): Promise<(Anchors | null)[]> {
+  return new Promise<(Anchors | null)[]>((resolve, reject) => {
+    const w = new Worker(new URL('../lib/fit.worker.ts', import.meta.url), { type: 'module' })
+    w.onmessage = (e: MessageEvent<(Anchors | null)[]>) => { resolve(e.data); w.terminate() }
+    w.onerror = (e) => { reject(e); w.terminate() }
+    w.postMessage(frames)
+  }).catch(() => trackAnchors(frames))
+}
 
 function dress(source: CanvasImageSource, width: number, height: number, id: AccessoryId): Promise<ImageBitmap> {
   const c = document.createElement('canvas')
@@ -44,16 +55,27 @@ async function buildClip(pokemon: number, id: AccessoryId): Promise<Clip> {
       const dec = new ImageDecoderCtor({ data, type: 'image/gif' })
       await dec.tracks.ready
       const count = dec.tracks.selectedTrack?.frameCount ?? 1
-      const frames: Frame[] = []
-      let size = { width: 0, height: 0 }
+      // Primero todos los fotogramas en crudo: el seguimiento necesita verlos todos.
+      const raw: { img: ImageData; ms: number }[] = []
+      const c = document.createElement('canvas')
+      const g = c.getContext('2d', { willReadFrequently: true })!
       for (let i = 0; i < count; i++) {
         const { image } = await dec.decode({ frameIndex: i })
-        size = { width: image.displayWidth, height: image.displayHeight }
-        frames.push({ bitmap: await dress(image, size.width, size.height, id), ms: Math.max(20, (image.duration ?? 100_000) / 1000) })
+        if (i === 0) { c.width = image.displayWidth; c.height = image.displayHeight }
+        g.clearRect(0, 0, c.width, c.height)
+        g.drawImage(image, 0, 0)
+        raw.push({ img: g.getImageData(0, 0, c.width, c.height), ms: Math.max(20, (image.duration ?? 100_000) / 1000) })
         image.close()
       }
       dec.close()
-      if (frames.length) return { ...size, frames }
+      const marks = await track(raw.map((r) => r.img))
+      const frames: Frame[] = []
+      for (const [i, r] of raw.entries()) {
+        const a = marks[i]
+        if (a) paintAccessory(r.img, id, a)
+        frames.push({ bitmap: await createImageBitmap(r.img), ms: r.ms })
+      }
+      if (frames.length) return { width: c.width, height: c.height, frames }
     } catch { /* sigue con el sprite quieto */ }
   }
   // El PNG quieto trae mucho margen vacío: se recorta a la figura para que ocupe lo mismo que el GIF.

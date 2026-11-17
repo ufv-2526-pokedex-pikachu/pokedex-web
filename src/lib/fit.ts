@@ -82,9 +82,9 @@ export function anchors(img: Img): Anchors | null {
   // es oscuro) y mucho más oscuros que lo que tienen alrededor (no una sombra ni el interior de una oreja).
   const r = Math.max(1, Math.round(h * 0.035))
   const isEye = (x: number, y: number) => {
-    if (!opaque(img, x, y) || !solid(img, x, y, r)) return false
+    if (!opaque(img, x, y)) return false
     const l = luma(img, x, y)
-    if (l >= 90) return false
+    if (l >= 90 || !solid(img, x, y, r)) return false
     let sum = 0, n = 0
     for (const [dx, dy] of [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]) {
       const xx = x + dx * (r + 1), yy = y + dy * (r + 1)
@@ -92,17 +92,35 @@ export function anchors(img: Img): Anchors | null {
     }
     return n > 0 && sum / n - l > 90
   }
-  let eyeTop = -1, first = 0, ex0 = Infinity, ex1 = -Infinity
-  for (let y = headStart; y < top + h * 0.6 && eyeTop < 0; y++) {
-    for (let x = left; x <= right; x++) if (isEye(x, y)) { eyeTop = y; first = x; break }
-  }
-  if (eyeTop >= 0) {
-    // El otro ojo está en la misma cabeza: a menos de media cabeza de distancia del primero.
-    const reach = Math.max(4, Math.round(h * 0.3))
-    for (let y = eyeTop; y <= eyeTop + 2; y++) for (let x = first - reach; x <= first + reach; x++) {
-      if (isEye(x, y)) { ex0 = Math.min(ex0, x); ex1 = Math.max(ex1, x) }
+  // Manchas candidatas (grupos de píxeles «ojo» que se tocan).
+  const spots: { x0: number; x1: number; y0: number; cx: number; cy: number }[] = []
+  const seen = new Set<number>()
+  for (let y = headStart; y < top + h * 0.6; y++) for (let x = left; x <= right; x++) {
+    if (seen.has(y * img.width + x) || !isEye(x, y)) continue
+    const spot = { x0: x, x1: x, y0: y, sx: 0, sy: 0, n: 0 }
+    const stack = [[x, y]]
+    seen.add(y * img.width + x)
+    while (stack.length) {
+      const [px, py] = stack.pop()!
+      spot.x0 = Math.min(spot.x0, px); spot.x1 = Math.max(spot.x1, px); spot.y0 = Math.min(spot.y0, py)
+      spot.sx += px; spot.sy += py; spot.n++
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = px + dx, ny = py + dy, k = ny * img.width + nx
+        if (!seen.has(k) && ny >= headStart && isEye(nx, ny)) { seen.add(k); stack.push([nx, ny]) }
+      }
     }
+    spots.push({ x0: spot.x0, x1: spot.x1, y0: spot.y0, cx: spot.sx / spot.n, cy: spot.sy / spot.n })
   }
+  // Los ojos van en pareja: dos manchas a la misma altura y cerca gana a una mancha suelta más arriba.
+  let eyes: typeof spots = []
+  const sameRow = Math.max(2, h * 0.04), near = h * 0.35
+  for (let i = 0; i < spots.length; i++) for (let j = i + 1; j < spots.length; j++) {
+    const a = spots[i], b = spots[j], dx = Math.abs(a.cx - b.cx)
+    if (Math.abs(a.cy - b.cy) <= sameRow && dx >= 2 && dx <= near && (!eyes.length || Math.min(a.y0, b.y0) < Math.min(...eyes.map((e) => e.y0)))) eyes = [a, b]
+  }
+  if (!eyes.length && spots.length) eyes = [spots.reduce((t, sp) => (sp.y0 < t.y0 ? sp : t))]
+  const eyeTop = eyes.length ? Math.min(...eyes.map((e) => e.y0)) : -1
+  const ex0 = Math.min(...eyes.map((e) => e.x0)), ex1 = Math.max(...eyes.map((e) => e.x1))
   if (eyeTop < 0) {
     // Sin ojos a la vista: la cabeza es el bulto de arriba, centrado donde está la figura en sus primeras filas.
     let sx = 0, sn = 0
@@ -166,9 +184,43 @@ function paintShape(img: Img, mask: (x: number, y: number) => boolean, color: (x
   }
 }
 
-/** Borra la figura por encima de una fila (las orejas que tapa la gorra o la corona). */
-function clearAbove(img: Img, y: number, x0: number, x1: number) {
-  for (let yy = 0; yy < y; yy++) for (let x = x0; x <= x1; x++) setPx(img, x, yy, [0, 0, 0, 0])
+/**
+ * Borra lo que asoma por encima de la gorra (orejas, cuernos, pelo): solo lo que está UNIDO a la cabeza,
+ * empezando por la fila de la visera. Un ala que pasa por detrás no se toca, así no quedan trozos sueltos.
+ */
+function clearAbove(img: Img, y: number, x0: number, x1: number, headL: number, headR: number) {
+  const seen = new Set<number>()
+  const stack: [number, number][] = []
+  for (let x = Math.max(x0, headL); x <= Math.min(x1, headR); x++) if (opaque(img, x, y - 1)) stack.push([x, y - 1])
+  while (stack.length) {
+    const [x, yy] = stack.pop()!
+    const k = yy * img.width + x
+    if (yy < 0 || yy >= y || x < x0 || x > x1 || seen.has(k) || !opaque(img, x, yy)) continue
+    seen.add(k)
+    stack.push([x + 1, yy], [x - 1, yy], [x, yy + 1], [x, yy - 1])
+  }
+  const before = floating(img, y)
+  for (const k of seen) setPx(img, k % img.width, Math.floor(k / img.width), [0, 0, 0, 0])
+  // Lo que se ha quedado suelto al borrar (la punta de un ala unida a la cabeza) tampoco debe flotar.
+  for (const k of floating(img, y)) if (!before.has(k)) setPx(img, k % img.width, Math.floor(k / img.width), [0, 0, 0, 0])
+}
+
+/** Píxeles de encima de la fila y que no están unidos al resto de la figura (de y para abajo). */
+function floating(img: Img, y: number): Set<number> {
+  const reached = new Set<number>()
+  const stack: number[] = []
+  for (let yy = y; yy < img.height; yy++) for (let x = 0; x < img.width; x++) if (opaque(img, x, yy)) { const k = yy * img.width + x; reached.add(k); stack.push(k) }
+  while (stack.length) {
+    const k = stack.pop()!
+    const x = k % img.width, yy = Math.floor(k / img.width)
+    for (const [nx, ny] of [[x + 1, yy], [x - 1, yy], [x, yy + 1], [x, yy - 1]]) {
+      const n = ny * img.width + nx
+      if (opaque(img, nx, ny) && !reached.has(n)) { reached.add(n); stack.push(n) }
+    }
+  }
+  const out = new Set<number>()
+  for (let yy = 0; yy < y; yy++) for (let x = 0; x < img.width; x++) if (opaque(img, x, yy) && !reached.has(yy * img.width + x)) out.add(yy * img.width + x)
+  return out
 }
 
 const RED: RGBA = [232, 64, 58, 255]
@@ -193,7 +245,7 @@ export function paintAccessory(img: Img, id: AccessoryId, a: Anchors) {
       // La cúpula va de lo más alto de la figura a la visera y tapa todo lo que hay encima (orejas incluidas).
       const capTop = Math.max(0, a.headStart - Math.max(1, Math.round(headW * 0.12)))
       const x0 = a.headLeft - 1, x1 = a.headRight + 1
-      clearAbove(img, a.brimY, wideL, wideR)
+      clearAbove(img, a.brimY, wideL, wideR, a.headLeft, a.headRight)
       const rx = (x1 - x0) / 2 + 0.5, ry = a.brimY - capTop + 0.5, ccx = (x0 + x1) / 2
       const dome = (x: number, y: number) => y >= capTop && y <= a.brimY && ((x - ccx) / rx) ** 2 + ((y - a.brimY) / ry) ** 2 <= 1
       const panel = (x: number) => Math.abs(x - ccx) <= Math.max(1, rx * 0.28)
@@ -251,7 +303,9 @@ export function paintAccessory(img: Img, id: AccessoryId, a: Anchors) {
       const snapshot = new Set<number>()
       for (let y = y0; y <= y1; y++) {
         const s = spanAt(img, y, Math.round(cx)) ?? { min: 0, max: img.width - 1 }
-        for (let x = s.min; x <= s.max; x++) if (opaque(img, x, y)) snapshot.add(y * img.width + x)
+        // Como mucho algo más ancha que la cabeza: si la cola o un brazo nace a esa altura, no se pinta.
+        const lo = Math.max(s.min, Math.round(cx - headW * 0.75)), hi = Math.min(s.max, Math.round(cx + headW * 0.75))
+        for (let x = lo; x <= hi; x++) if (opaque(img, x, y)) snapshot.add(y * img.width + x)
       }
       const mask = (x: number, y: number) => snapshot.has(y * img.width + x)
       paintShape(img, mask, (x, y) => ((x + y) % 4 === 0 ? GREEN_DARK : GREEN), { x0: a.left, y0, x1: a.right, y1 })
@@ -274,4 +328,76 @@ export function paintAccessory(img: Img, id: AccessoryId, a: Anchors) {
       break
     }
   }
+}
+
+/* ---------- Seguimiento: el accesorio pegado a la cabeza en toda la animación ---------- */
+
+const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]
+
+function shift(a: Anchors, dx: number, dy: number): Anchors {
+  return {
+    top: a.top + dy, bottom: a.bottom + dy, left: a.left + dx, right: a.right + dx,
+    headStart: a.headStart + dy, headLeft: a.headLeft + dx, headRight: a.headRight + dx,
+    brimY: a.brimY + dy, eyeX: a.eyeX + dx, eyeY: a.eyeY + dy, neckY: a.neckY + dy, chestY: a.chestY + dy,
+  }
+}
+
+/**
+ * Puntos de referencia de cada fotograma de una animación, coherentes entre sí.
+ * Buscar la cabeza en cada fotograma por separado hace que el accesorio salte cuando en uno se equivoca
+ * (un péndulo oscuro parece un ojo). Así que: 1) se elige el fotograma cuya detección coincide con la
+ * mayoría, 2) se recorta su cabeza y 3) se busca ese mismo trozo de imagen en cada fotograma, partiendo
+ * de dónde estaba en el anterior. El accesorio se mueve exactamente lo que se mueve la cabeza.
+ */
+export function trackAnchors(frames: Img[]): (Anchors | null)[] {
+  // Para elegir la referencia basta una muestra de unos 12 fotogramas repartidos por la animación.
+  const every = Math.max(1, Math.ceil(frames.length / 12))
+  const per = frames.map((f, i) => (i % every === 0 ? anchors(f) : null))
+  const ok = per.flatMap((a, i) => (a ? [i] : []))
+  if (ok.length === 0) return frames.map(anchors)
+  const rel = (a: Anchors) => [a.eyeX - a.left, a.eyeY - a.top, a.headRight - a.headLeft]
+  const med = [0, 1, 2].map((k) => median(ok.map((i) => rel(per[i]!)[k])))
+  const ref = ok.reduce((best, i) => {
+    const d = (j: number) => rel(per[j]!).reduce((s, v, k) => s + Math.abs(v - med[k]), 0)
+    return d(i) < d(best) ? i : best
+  })
+  const A = per[ref]!
+  const R0 = frames[ref]
+  // La cabeza del fotograma de referencia: sus píxeles opacos (unos 600 como mucho, para ir rápido).
+  const x0 = Math.max(0, A.headLeft), x1 = Math.min(R0.width - 1, A.headRight)
+  const y0 = Math.max(0, A.headStart), y1 = Math.min(R0.height - 1, A.neckY)
+  const area = (x1 - x0 + 1) * (y1 - y0 + 1)
+  const step = Math.max(1, Math.round(Math.sqrt(area / 600)))
+  const pts: [number, number, number, number, number][] = []
+  for (let y = y0; y <= y1; y += step) for (let x = x0; x <= x1; x += step) {
+    const i = (y * R0.width + x) * 4
+    if (R0.data[i + 3] > ALPHA_MIN) pts.push([x, y, R0.data[i], R0.data[i + 1], R0.data[i + 2]])
+  }
+  if (pts.length === 0) return per.map(() => A)
+  // Diferencia entre la cabeza de referencia y el fotograma movido (dx, dy); deja de sumar en cuanto supera `limit`.
+  const cost = (img: Img, dx: number, dy: number, limit = Infinity) => {
+    let c = 0
+    for (const [x, y, r, g, b] of pts) {
+      if (c > limit) return c
+      const xx = x + dx, yy = y + dy
+      if (xx < 0 || yy < 0 || xx >= img.width || yy >= img.height) { c += 765; continue }
+      const i = (yy * img.width + xx) * 4
+      c += img.data[i + 3] <= ALPHA_MIN ? 765 : Math.abs(img.data[i] - r) + Math.abs(img.data[i + 1] - g) + Math.abs(img.data[i + 2] - b)
+    }
+    return c
+  }
+  const R = Math.max(3, Math.round(Math.max(R0.width, R0.height) * 0.06))
+  const find = (img: Img, [cx, cy]: [number, number]): [number, number] => {
+    let best: [number, number] = [cx, cy], bestC = cost(img, cx, cy)
+    for (let dy = cy - R; dy <= cy + R; dy++) for (let dx = cx - R; dx <= cx + R; dx++) {
+      const c = cost(img, dx, dy, bestC)
+      // A igualdad, el desplazamiento más pequeño respecto al fotograma anterior: nada de saltos.
+      if (c < bestC || (c === bestC && Math.abs(dx - cx) + Math.abs(dy - cy) < Math.abs(best[0] - cx) + Math.abs(best[1] - cy))) { bestC = c; best = [dx, dy] }
+    }
+    return best
+  }
+  const off: [number, number][] = frames.map(() => [0, 0])
+  for (let i = ref + 1; i < frames.length; i++) off[i] = find(frames[i], off[i - 1])
+  for (let i = ref - 1; i >= 0; i--) off[i] = find(frames[i], off[i + 1])
+  return frames.map((_, i) => shift(A, off[i][0], off[i][1]))
 }
